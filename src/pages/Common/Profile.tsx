@@ -1,12 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { EditOutlined } from "@ant-design/icons";
-import { AllImages } from "../../../public/images/AllImages";
 import ReuseButton from "../../ui/Button/ReuseButton";
 import ReusableForm from "../../ui/Form/ReuseForm";
 import ReuseInput from "../../ui/Form/ReuseInput";
 import Cookies from "js-cookie";
 import { decodedToken } from "../../utils/jwt";
 import { IJwtPayload } from "../../types";
+import { useGetProfileQuery } from "../../redux/features/profile/profileApi";
+import Loading from "../../ui/Loading";
+import { getImageUrl } from "../../helpers/config/envConfig";
 
 const inputStructure = [
   {
@@ -20,39 +22,47 @@ const inputStructure = [
     rules: [{ required: true, message: "Email is required" }],
   },
   {
-    name: "userName",
+    name: "fullName",
     type: "text",
     inputType: "text",
-    label: "User name",
-    placeholder: "Enter your username",
+    label: "Name",
+    placeholder: "Enter your Name",
     labelClassName: "!font-medium",
     inputClassName: "!py-2 !w-full",
-    rules: [{ required: true, message: "User name is required" }],
+    rules: [{ required: true, message: "Name is required" }],
   },
   {
-    name: "contactNumber",
+    name: "phone",
     type: "text",
     inputType: "tel",
-    label: "Contact number",
-    placeholder: "Enter your contact number",
+    label: "Phone number",
+    placeholder: "Enter your Phone number",
     labelClassName: "!font-medium",
     inputClassName: "!py-2 !w-full",
-    rules: [{ required: true, message: "Contact number is required" }],
+    rules: [{ required: true, message: "Phone number is required" }],
   },
 ];
 
 const Profile = () => {
+  const imageApiUrl = getImageUrl();
   const token = Cookies.get("teeru_accessToken");
   const user = decodedToken(token || "") as IJwtPayload;
-  const profileData = {
-    userName: "James Mitchell",
-    email: "emily@gmail.com",
-    contactNumber: "+99-01846875456",
-  };
+
+  const { data, isFetching } = useGetProfileQuery({});
+
+  const profileData = data?.data;
 
   const onSubmit = (values: any) => {
     console.log(values);
   };
+
+  if (isFetching) {
+    return (
+      <div className="flex items-center justify-center min-h-[90vh]">
+        <Loading />
+      </div>
+    );
+  }
 
   return (
     <div
@@ -70,10 +80,10 @@ const Profile = () => {
             <div className="flex flex-col items-center justify-center gap-5">
               <img
                 className="h-36 w-36 rounded-full border-2 border-secondary-color relative"
-                src={AllImages.profile}
+                src={imageApiUrl + profileData?.profileImage}
                 alt=""
               />
-              <p className="text-4xl font-semibold">{profileData.userName}</p>
+              <p className="text-4xl font-semibold">{profileData?.fullName}</p>
             </div>
             <div className="w-full flex justify-end mt-5">
               <ReuseButton
@@ -94,7 +104,7 @@ const Profile = () => {
           </div>
           <div className="flex flex-col w-full items-center text-white mt-5">
             <ReusableForm
-              onSubmit={onSubmit}
+              handleFinish={onSubmit}
               className="!w-full"
               defaultValues={profileData}
             >

@@ -6,7 +6,6 @@ const UserOverview = () => {
   const currentYear = new Date().getFullYear();
   const [year, setYear] = useState(currentYear);
 
-  console.log(year);
   return (
     <div
       className="w-full p-3 bg-[#FFFFFF] rounded-lg"

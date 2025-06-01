@@ -4,6 +4,7 @@ import usersLogo from "/images/dashboard-logo/users.svg";
 import categoryLogo from "/images/dashboard-logo/category.svg";
 import eventsLogo from "/images/dashboard-logo/events.svg";
 import reviewLogo from "/images/dashboard-logo/review.svg";
+import earningLogo from "/images/dashboard-logo/earning.svg";
 
 //* ------------------IMPORT COMPONENTS------------------
 import AdminDashboard from "../pages/Admin/AdminDashboard";
@@ -61,6 +62,6 @@ export const adminPaths = [
     element: <AdminAllEarning />,
     key: "earning",
     name: "Earning",
-    icon: reviewLogo,
+    icon: earningLogo,
   },
 ];

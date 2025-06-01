@@ -106,4 +106,3 @@ const AdminAllCategory = () => {
 };
 
 export default AdminAllCategory;
-//

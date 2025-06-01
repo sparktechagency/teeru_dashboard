@@ -1,15 +1,52 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import JoditEditor from "jodit-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ReuseButton from "../../../ui/Button/ReuseButton";
+import { toast } from "sonner";
+import {
+  useGetContactUsQuery,
+  useUpdateSettingMutation,
+} from "../../../redux/features/setting/settingApi";
+import Loading from "../../../ui/Loading";
 
 const ContactUs = () => {
+  const [addStaticContent] = useUpdateSettingMutation();
   const editor = useRef(null);
   const [content, setContent] = useState("");
 
-  const handleOnSave = () => {
-    console.log(content);
+  const { data, isFetching } = useGetContactUsQuery({
+    type: "privacy-policy",
+  });
+
+  useEffect(() => {
+    if (data) {
+      setContent(data?.data?.content);
+    }
+  }, [data]);
+
+  const handleOnSave = async () => {
+    const data = {
+      key: "contact_us",
+      content,
+    };
+    const toastId = toast.loading("Updating Contact Us...");
+
+    try {
+      const res = await addStaticContent(data).unwrap();
+      toast.success(res?.message, { id: toastId, duration: 2000 });
+      setContent("");
+    } catch (error: any) {
+      toast.error("Failed to update Contact Us", {
+        id: toastId,
+        duration: 2000,
+      });
+    }
   };
 
+  if (isFetching) {
+    return <Loading />;
+  }
   return (
     <div
       className=" min-h-[90vh]  rounded-xl"

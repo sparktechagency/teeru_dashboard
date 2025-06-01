@@ -1,11 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Form, Upload } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoCameraOutline, IoChevronBackOutline } from "react-icons/io5";
-import { AllImages } from "../../../public/images/AllImages";
 import ReusableForm from "../../ui/Form/ReuseForm";
 import ReuseInput from "../../ui/Form/ReuseInput";
 import ReuseButton from "../../ui/Button/ReuseButton";
+import {
+  useGetProfileQuery,
+  useUpdateProfileMutation,
+} from "../../redux/features/profile/profileApi";
+import Loading from "../../ui/Loading";
+import { getImageUrl } from "../../helpers/config/envConfig";
+import tryCatchWrapper from "../../utils/tryCatchWrapper";
 
 const inputStructure = [
   {
@@ -20,40 +26,44 @@ const inputStructure = [
     disable: true,
   },
   {
-    name: "userName",
+    name: "fullName",
     type: "text",
     inputType: "text",
-    label: "User name",
-    placeholder: "Enter your username",
+    label: "Name",
+    placeholder: "Enter your Name",
     labelClassName: "!font-medium",
     inputClassName: "!py-2 !w-full",
-    rules: [{ required: true, message: "User name is required" }],
+    rules: [{ required: true, message: "Name is required" }],
     disable: false,
   },
   {
-    name: "contactNumber",
+    name: "phone",
     type: "text",
     inputType: "tel",
-    label: "Contact number",
-    placeholder: "Enter your contact number",
+    label: "Phone number",
+    placeholder: "Enter your Phone number",
     labelClassName: "!font-medium",
     inputClassName: "!py-2 !w-full",
-    rules: [{ required: true, message: "Contact number is required" }],
+    rules: [{ required: true, message: "Phone number is required" }],
     disable: false,
   },
 ];
 
 const EditProfile = () => {
-  const profileData = {
-    userName: "James Mitchell",
-    email: "emily@gmail.com",
-    address: "Vancouver, BC VG1Z4, Canada",
-    contactNumber: "+99-01846875456",
-  };
+  const [form] = Form.useForm();
+  const imageApiUrl = getImageUrl();
+  const { data, isFetching } = useGetProfileQuery({});
+  const [updateProfile] = useUpdateProfileMutation({});
 
-  const profileImage = AllImages.profile;
+  const profileData = data?.data;
+
+  const profileImage = imageApiUrl + profileData?.profileImage;
 
   const [imageUrl, setImageUrl] = useState(profileImage);
+
+  useEffect(() => {
+    setImageUrl(profileImage);
+  }, [profileImage]);
 
   const handleImageUpload = (info: any) => {
     if (info.file.status === "removed") {
@@ -68,10 +78,30 @@ const EditProfile = () => {
     }
   };
 
-  const onFinish = (values: any) => {
-    console.log("Success:", values);
-    console.log(imageUrl);
+  const onFinish = async (values: any) => {
+    const formData = new FormData();
+    if (values?.image?.file?.originFileObj) {
+      formData.append("profileImage", values?.image?.file?.originFileObj);
+    }
+    const data = {
+      fullName: values?.fullName,
+      phone: values?.phone,
+    };
+    formData.append("data", JSON.stringify(data));
+    await tryCatchWrapper(
+      updateProfile,
+      { body: formData },
+      "Updating Profile..."
+    );
   };
+
+  if (isFetching) {
+    return (
+      <div className="flex items-center justify-center min-h-[90vh]">
+        <Loading />
+      </div>
+    );
+  }
 
   return (
     <div
@@ -91,11 +121,12 @@ const EditProfile = () => {
       </div>
       <div className=" flex justify-center items-center">
         <ReusableForm
-          onSubmit={onFinish}
+          form={form}
+          handleFinish={onFinish}
           className="py-10 w-full lg:w-[70%]"
           defaultValues={profileData}
         >
-          <div className="mt-5 flex flex-col justify-center items-center gap-x-4">
+          <div className="mt-5 flex flex-col justify-center mb-8 gap-x-4">
             <div className=" relative">
               <img
                 className="h-40 w-40 relative rounded-full border border-secondary-color object-contain "
@@ -128,14 +159,16 @@ const EditProfile = () => {
                     style={{
                       zIndex: 1,
                     }}
-                    className="bg-secondary-color p-2 w-fit h-fit shadow !border-none absolute -top-12 left-[115px] rounded-full"
+                    className="bg-secondary-color p-2 w-fit h-fit shadow !border-none absolute -top-12 left-[115px] rounded-full cursor-pointer"
                   >
                     <IoCameraOutline className="w-6 h-6 text-primary-color" />
                   </button>
                 </Upload>
               </Form.Item>
             </div>
-            <p className="text-5xl font-semibold -mt-5">James Mitchell</p>
+            <p className="text-5xl font-semibold -mt-5">
+              {profileData?.fullName}
+            </p>
           </div>
 
           {inputStructure.map((input, index) => (

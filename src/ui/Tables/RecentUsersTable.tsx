@@ -1,10 +1,13 @@
 import React from "react";
 import ReuseTable from "../../utils/ReuseTable";
-import { UserType } from "../../types/userTypes";
+import { IUserType } from "../../types/userTypes";
 import { ConfigProvider } from "antd";
+import { getImageUrl } from "../../helpers/config/envConfig";
+import { formetDateAndTime } from "../../utils/dateFormet";
+import { ColumnsType } from "antd/es/table";
 
 interface RecentUsersTableProps {
-  data: UserType[];
+  data: IUserType[];
   loading: boolean;
   setPage?: (page: number) => void;
   page?: number;
@@ -20,17 +23,28 @@ const RecentUsersTable: React.FC<RecentUsersTableProps> = ({
   total,
   limit,
 }) => {
-  const columns = [
+  const imageApiUrl = getImageUrl();
+  const columns: ColumnsType<IUserType> = [
     {
       title: "#SI",
-      dataIndex: "id",
-      key: "id",
-      render: (text: number) => text.toString().padStart(2, "0"),
+      dataIndex: "_id",
+      key: "_id",
+      render: (_: unknown, __: unknown, index: number) => index + 1,
     },
     {
       title: "Full Name",
       dataIndex: "fullName",
       key: "fullName",
+      render: (text: string, record: IUserType) => (
+        <div className="flex items-center gap-2">
+          <img
+            src={imageApiUrl + record?.profileImage}
+            alt="User"
+            className="w-10 h-10 object-cover rounded"
+          />
+          <p>{text}</p>
+        </div>
+      ),
     },
     {
       title: "Phone",
@@ -46,11 +60,17 @@ const RecentUsersTable: React.FC<RecentUsersTableProps> = ({
       title: "Gender",
       dataIndex: "gender",
       key: "gender",
+      // filters: [
+      //   { text: "Male", value: "male" },
+      //   { text: "Female", value: "female" },
+      // ],
+      // filterMultiple: false,
     },
     {
       title: "Joining Date",
-      dataIndex: "joiningDate",
-      key: "joiningDate",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      render: (date: string) => formetDateAndTime(date),
     },
   ];
 

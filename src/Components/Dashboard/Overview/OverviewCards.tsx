@@ -1,23 +1,28 @@
 import { AllImages } from "../../../../public/images/AllImages";
 
-const data = [
-  {
-    id: 1,
-    background: "#507D18",
-    name: "Total Users",
-    icon: AllImages.users,
-    count: 10000,
-  },
-  {
-    id: 2,
-    background: "#ACD03D",
-    name: "Total Earning",
-    icon: AllImages.earning,
-    count: "$6000",
-  },
-];
-
-const OverviewCard = () => {
+const OverviewCard = ({
+  totalUser,
+  totalEarning,
+}: {
+  totalUser: number;
+  totalEarning: number;
+}) => {
+  const data = [
+    {
+      id: 1,
+      background: "#507D18",
+      name: "Total Users",
+      icon: AllImages.users,
+      count: totalUser,
+    },
+    {
+      id: 2,
+      background: "#ACD03D",
+      name: "Total Earning",
+      icon: AllImages.earning,
+      count: `$${totalEarning}`,
+    },
+  ];
   return (
     <div className="flex flex-col lg:flex-row gap-1 lg:gap-5 mb-5">
       {/* Company  */}

@@ -1,9 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import ReuseButton from "../../../ui/Button/ReuseButton";
-import { FormInstance } from "antd";
+import { Form, FormInstance } from "antd";
 import ReusableForm from "../../../ui/Form/ReuseForm";
 import ReuseInput from "../../../ui/Form/ReuseInput";
+import tryCatchWrapper from "../../../utils/tryCatchWrapper";
+import { useChangePasswordMutation } from "../../../redux/features/auth/authApi";
+import { clearAuth } from "../../../redux/features/auth/authSlice";
+import { useAppDispatch } from "../../../redux/hooks";
+import Cookies from "js-cookie";
 
 const inputStructure = [
   {
@@ -56,11 +61,28 @@ const inputStructure = [
 ];
 
 const ChangePassword = () => {
-  //   const user = JSON.parse(localStorage.getItem("user_into") || "null");
-  const onFinish = (values: any) => {
-    console.log("Success:", values);
-    localStorage.removeItem("user_into");
-    window.location.reload();
+  const [form] = Form.useForm();
+  const [updatePassword] = useChangePasswordMutation();
+  const dispatch = useAppDispatch();
+
+  const onFinish = async (values: any) => {
+    const data = {
+      oldPassword: values.currentPassword,
+      newPassword: values.confirmNewPassword,
+    };
+
+    const res = await tryCatchWrapper(
+      updatePassword,
+      { body: data },
+      "Changing Password..."
+    );
+    if (res.statusCode === 200) {
+      dispatch(clearAuth());
+      Cookies.remove("teeru_accessToken");
+
+      window.location.href = "/sign-in";
+      window.location.reload();
+    }
   };
   return (
     <div
@@ -76,7 +98,7 @@ const ChangePassword = () => {
       </div>
       <div className="md:p-14 lg:p-20 flex justify-center items-center">
         <div className="w-full">
-          <ReusableForm onSubmit={onFinish}>
+          <ReusableForm form={form} handleFinish={onFinish}>
             {inputStructure.map((input, index) => (
               <ReuseInput
                 key={index}

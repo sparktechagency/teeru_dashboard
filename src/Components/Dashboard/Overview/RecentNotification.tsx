@@ -1,91 +1,26 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Link } from "react-router-dom";
 import { AllIcons } from "../../../../public/images/AllImages";
 import Cookies from "js-cookie";
 import { decodedToken } from "../../../utils/jwt";
 import { IJwtPayload } from "../../../types";
-
-const activities = [
-  {
-    id: "1",
-    activity: "New user has joined in your application.",
-    time: "2:00 PM",
-  },
-  {
-    id: "2",
-    activity: "New user has joined in your application.",
-    time: "2:00 PM",
-  },
-  {
-    id: "3",
-    activity: "New user has joined in your application.",
-    time: "2:00 PM",
-  },
-  {
-    id: "4",
-    activity: "New user has joined in your application.",
-    time: "2:00 PM",
-  },
-  {
-    id: "5",
-    activity: "New user has joined in your application.",
-    time: "2:00 PM",
-  },
-  {
-    id: "6",
-    activity: "New user has joined in your application.",
-    time: "2:00 PM",
-  },
-  {
-    id: "7",
-    activity: "New user has joined in your application.",
-    time: "3:00 PM",
-  },
-  {
-    id: "8",
-    activity: "New user has joined in your application.",
-    time: "3:30 PM",
-  },
-  {
-    id: "9",
-    activity: "New user has joined in your application.",
-    time: "4:00 PM",
-  },
-  {
-    id: "10",
-    activity: "New user has joined in your application.",
-    time: "4:15 PM",
-  },
-  {
-    id: "11",
-    activity: "New user has joined in your application.",
-    time: "5:00 PM",
-  },
-  {
-    id: "12",
-    activity: "New user has joined in your application.",
-    time: "5:30 PM",
-  },
-  {
-    id: "13",
-    activity: "New user has joined in your application.",
-    time: "6:00 PM",
-  },
-  {
-    id: "14",
-    activity: "New user has joined in your application.",
-    time: "6:15 PM",
-  },
-  {
-    id: "15",
-    activity: "New user has joined in your application.",
-
-    time: "6:30 PM",
-  },
-];
+import { useGetNotificationQuery } from "../../../redux/features/dashboard/dashboardApi";
+import { formetDateAndTime } from "../../../utils/dateFormet";
+import { FadeLoader } from "react-spinners";
 
 const RecentNotification = () => {
   const token = Cookies.get("teeru_accessToken");
   const user = decodedToken(token || "") as IJwtPayload;
+
+  const { data, isFetching } = useGetNotificationQuery(
+    { page: 1, limit: 10 },
+    {
+      refetchOnMountOrArgChange: true,
+    }
+  );
+
+  const notifications = data?.data?.result;
+
   return (
     <div
       className="w-full max-h-[300px] xl:max-h-[600px] overflow-y-auto  rounded-xl relative"
@@ -97,23 +32,30 @@ const RecentNotification = () => {
           <p className="cursor-pointer text-[#898c8d] underline ">View all</p>
         </Link>
       </div>
+      {isFetching ? (
+        <div className="flex items-center justify-center h-full">
+          <FadeLoader color="#507D18" />
+        </div>
+      ) : (
+        <div className="flex flex-col gap-5 p-5">
+          {notifications?.map((activity: any) => (
+            <div key={activity?._id} className="flex items-start gap-2">
+              <div className=" p-1 bg-[#F3F8E2] rounded-full w-fit">
+                <img src={AllIcons.bell} className="w-5 h-5" alt="" />
+              </div>
+              <div>
+                <p className="text-[#242424] text-base font-medium">
+                  {activity?.message}
+                </p>
 
-      <div className="flex flex-col gap-5 p-5">
-        {activities.map((activity, i) => (
-          <div key={i} className="flex items-start gap-2">
-            <div className=" p-1 bg-[#F3F8E2] rounded-full w-fit">
-              <img src={AllIcons.bell} className="w-5 h-5" alt="" />
+                <p className="text-sm text-[#8A8D8E] mt-1">
+                  {formetDateAndTime(activity?.createdAt)}
+                </p>
+              </div>
             </div>
-            <div>
-              <p className="text-[#242424] text-base font-medium">
-                {activity.activity}
-              </p>
-
-              <p className="text-sm text-[#8A8D8E] mt-1">{activity.time}</p>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
