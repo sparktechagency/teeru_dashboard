@@ -9,6 +9,7 @@ interface ReuseTableProps<T> {
   total?: any; // Total any of items
   limit?: any; // Items per page
   page?: any; // Current page
+  scroll?: any;
   onChange?: (
     pagination: any,
     filters: Record<string, any>,
@@ -25,6 +26,7 @@ const ReuseTable: React.FC<ReuseTableProps<any>> = ({
   total,
   limit,
   page,
+  scroll = { x: "max-content" },
   onChange,
   keyValue,
 }) => {
@@ -49,7 +51,7 @@ const ReuseTable: React.FC<ReuseTableProps<any>> = ({
             }
           : false
       }
-      scroll={{ x: true }}
+      scroll={scroll}
       rowKey={keyValue}
     />
   );

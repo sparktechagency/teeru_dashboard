@@ -5,25 +5,20 @@ import { ReactNode } from "react";
 import { cn } from "../../lib/utils";
 
 type ReusableFormProps = {
-  onSubmit: (values: Record<string, any>) => void;
+  form?: any;
   children: ReactNode;
-  defaultValues?: Record<string, any>;
+  defaultValues?: any;
   className?: string;
+  handleFinish: (values: Record<string, any>) => void;
 };
 
 const ReusableForm = ({
-  onSubmit,
+  form,
   children,
   defaultValues,
   className,
+  handleFinish,
 }: ReusableFormProps) => {
-  const [form] = Form.useForm();
-
-  const handleFinish = (values: Record<string, any>) => {
-    onSubmit(values);
-    form.resetFields();
-  };
-
   return (
     <Form
       form={form}

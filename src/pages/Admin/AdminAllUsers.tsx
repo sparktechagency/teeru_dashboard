@@ -1,35 +1,49 @@
 import { useState } from "react";
-import { UserData } from "../../../public/data/Users";
-import { UserType } from "../../types/userTypes";
 import SearchInput from "../../ui/Form/ReuseSearchInput";
 import AdminAllUsersTable from "../../ui/Tables/AdminAllUsersTable";
 import AdminViewUsersModal from "../../ui/Modal/Users/AdminViewUsers";
 import BlockModal from "../../ui/Modal/BlockModal";
 import UnblockModal from "../../ui/Modal/UnblockModal";
+import {
+  useBlockUserMutation,
+  useGetAllUsersQuery,
+  useUnBlockUserMutation,
+} from "../../redux/features/users/usersApi";
+import tryCatchWrapper from "../../utils/tryCatchWrapper";
+import { IUserType } from "../../types";
 
 const AdminAllUsers = () => {
-  const data = UserData;
+  const [blockUser] = useBlockUserMutation();
+  const [unblockUser] = useUnBlockUserMutation();
   const [page, setPage] = useState(1);
   const [searchText, setSearchText] = useState("");
-  console.log(searchText);
 
   const limit = 12;
+
+  const { data, isFetching } = useGetAllUsersQuery({
+    page,
+    limit,
+    searchTerm: searchText,
+  });
+
+  const allUsers: IUserType[] = data?.data;
+  const totalAllUsers = data?.meta?.total;
 
   const [isViewModalVisible, setIsViewModalVisible] = useState(false);
   const [isBlockModalVisible, setIsBlockModalVisible] = useState(false);
   const [isUnblockModalVisible, setIsUnblockModalVisible] = useState(false);
-  const [currentRecord, setCurrentRecord] = useState<UserType | null>(null);
+  const [currentRecord, setCurrentRecord] = useState<IUserType | null>(null);
 
-  const showViewUserModal = (record: UserType) => {
+  const showViewUserModal = (record: IUserType) => {
     setCurrentRecord(record);
     setIsViewModalVisible(true);
   };
 
-  const showBlockModal = (record: UserType) => {
+  const showBlockModal = (record: IUserType) => {
     setCurrentRecord(record);
     setIsBlockModalVisible(true);
   };
-  const showUnblockModal = (record: UserType) => {
+  const showUnblockModal = (record: IUserType) => {
     setCurrentRecord(record);
     setIsUnblockModalVisible(true);
   };
@@ -41,11 +55,25 @@ const AdminAllUsers = () => {
     setCurrentRecord(null);
   };
 
-  const handleBlock = (data: UserType) => {
-    console.log(data);
+  const handleBlock = async (record: IUserType) => {
+    const res = await tryCatchWrapper(
+      blockUser,
+      { params: record?._id },
+      "Processing..."
+    );
+    if (res.statusCode === 200) {
+      handleCancel();
+    }
   };
-  const handleUnblock = (data: UserType) => {
-    console.log(data);
+  const handleUnblock = async (record: IUserType) => {
+    const res = await tryCatchWrapper(
+      unblockUser,
+      { params: record?._id },
+      "Processing..."
+    );
+    if (res.statusCode === 200) {
+      handleCancel();
+    }
   };
   return (
     <div>
@@ -69,14 +97,14 @@ const AdminAllUsers = () => {
         </div>
         <div className="p-5">
           <AdminAllUsersTable
-            data={data}
-            loading={false}
+            data={allUsers}
+            loading={isFetching}
             showViewModal={showViewUserModal}
             showBlockModal={showBlockModal}
             showUnblockModal={showUnblockModal}
             setPage={setPage}
             page={page}
-            total={data.length}
+            total={totalAllUsers}
             limit={limit}
           />
         </div>

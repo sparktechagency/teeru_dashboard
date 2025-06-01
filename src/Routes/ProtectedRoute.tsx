@@ -20,7 +20,7 @@ function ProtectedRoute({ children, role }: ProtectedRouteProps) {
 
     return <>{children}</>;
   } else {
-    return <Navigate to="/signin" replace />;
+    return <Navigate to="/sign-in" replace />;
   }
 }
 

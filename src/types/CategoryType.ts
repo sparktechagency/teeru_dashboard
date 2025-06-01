@@ -1,7 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-interface CategoryType {
-  sid: string;
-  categoryName: string;
-  categoryImage: any;
+interface ICategoryType {
+  _id: string;
+  name: string;
+  image: string;
+  isDeleted: boolean;
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
 }
-export type { CategoryType };
+export type { ICategoryType };

@@ -85,12 +85,12 @@ export const mainTheme = {
       headerSplitColor: "#075B5D",
     },
     Pagination: {
-      colorBgContainer: "#0a0a08",
+      colorBgContainer: "#ffffff",
       itemActiveBg: "#507D18",
       itemActiveColor: "rgb(255,255,255)",
-      colorPrimary: "rgb(255,255,255)",
-      colorText: "rgb(255,255,255)",
-      colorBgTextHover: "#202020",
+      colorPrimary: "#507D18",
+      colorText: "#507D18",
+      colorBgTextHover: "#507D1855",
     },
     Input: {
       colorTextPlaceholder: "#3A3A3A99 ",
@@ -108,7 +108,7 @@ export const mainTheme = {
       colorText: "#111111",
     },
     Rate: {
-      starBg: "#ffffff66",
+      starBg: "#00000016",
     },
   },
 };

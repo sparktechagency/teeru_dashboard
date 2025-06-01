@@ -36,10 +36,10 @@ function AuthRedirect() {
       if (user && user.role === "admin") {
         navigate(`/${user.role}/overview`, { replace: true });
       } else {
-        navigate("/signin", { replace: true });
+        navigate("/sign-in", { replace: true });
       }
     } else {
-      navigate("/signin", { replace: true });
+      navigate("/sign-in", { replace: true });
     }
   }, [navigate]);
 
@@ -55,7 +55,7 @@ const router: RouteObject[] = [
     element: <AuthRedirect />,
   },
   {
-    path: "/dashboard",
+    path: "/overview",
     index: true, // This applies to the exact path "/"
     element: <AuthRedirect />,
   },

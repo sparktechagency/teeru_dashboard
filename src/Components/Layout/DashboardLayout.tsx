@@ -67,7 +67,7 @@ const DashboardLayout = () => {
   const handleLogout = () => {
     dispatch(clearAuth());
     Cookies.remove("teeru_accessToken");
-    window.location.href = "/signin";
+    window.location.href = "/sign-in";
     window.location.reload();
   };
 

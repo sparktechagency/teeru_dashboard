@@ -1,11 +1,12 @@
 import { Modal, Rate } from "antd";
-import { AllImages } from "../../../../public/images/AllImages";
-import { ReviewType } from "../../../types/ReviewType";
+import { formetDateAndTime } from "../../../utils/dateFormet";
+import { IReview } from "../../../types";
+import { getImageUrl } from "../../../helpers/config/envConfig";
 
 interface AdminViewReviewModalProps {
   isViewModalVisible: boolean;
   handleCancel: () => void;
-  currentRecord: ReviewType | null;
+  currentRecord: IReview | null;
 }
 
 const AdminViewReviewModal: React.FC<AdminViewReviewModalProps> = ({
@@ -13,6 +14,7 @@ const AdminViewReviewModal: React.FC<AdminViewReviewModalProps> = ({
   handleCancel,
   currentRecord,
 }) => {
+  const imageApiUrl = getImageUrl();
   return (
     <Modal
       open={isViewModalVisible}
@@ -27,17 +29,17 @@ const AdminViewReviewModal: React.FC<AdminViewReviewModalProps> = ({
             User Feedback
           </h3>
           <p className="text-sm sm:text-base lg:text-lg text-center mt-2">
-            See full details feedback from {currentRecord?.fullName}
+            See full details feedback from {currentRecord?.userId?.fullName}
           </p>
           <div className="flex justify-center items-center gap-1 mt-5">
             {/* Avatar */}
             <img
-              src={AllImages.profile}
-              alt={currentRecord?.fullName}
+              src={imageApiUrl + currentRecord?.userId?.profileImage}
+              alt={currentRecord?.userId?.fullName}
               className="w-12 h-12 object-cover rounded-full"
             />
             <div className="text-base sm:text-lg lg:text-xl font-semibold ">
-              {currentRecord?.fullName}
+              {currentRecord?.userId?.fullName}
             </div>
           </div>
 
@@ -46,32 +48,33 @@ const AdminViewReviewModal: React.FC<AdminViewReviewModalProps> = ({
               <div className="flex items-center gap-2 mb-2">
                 <span className="font-medium">Name: </span>
                 <span className="text-secondary-color">
-                  {currentRecord?.fullName}
+                  {currentRecord?.userId?.fullName}
                 </span>
               </div>
 
               <div className="flex items-center  gap-2 mb-2">
                 <span className="font-medium">Email:</span>
-                <span>{currentRecord?.email}</span>
+                <span>{currentRecord?.userId?.email}</span>
               </div>
 
               <div className="flex items-center  gap-2 mb-2">
                 <span className="font-medium">Rating :</span>
-                <span className="text-justify pt-0 ">
+                <span className="text-justify pt-0 flex items-center">
                   <Rate disabled defaultValue={currentRecord?.rating} />
+                  <span className="ml-2">{currentRecord?.rating}</span>
                 </span>
               </div>
 
               <div className="flex items-center  gap-2 mb-2">
                 <span className="font-medium">Date :</span>
                 <span className="text-justify pt-0 ">
-                  {currentRecord?.date}
+                  {formetDateAndTime(currentRecord?.createdAt)}
                 </span>
               </div>
               <div className="flex items-start  gap-2 mb-2">
                 <span className="font-medium text-nowrap">Review :</span>
                 <span className="text-justify pt-0 ">
-                  {currentRecord?.review}
+                  {currentRecord?.comment}
                 </span>
               </div>
             </div>

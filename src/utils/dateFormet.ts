@@ -26,5 +26,5 @@ export const formatDate = (date: string | Date | undefined): string => {
 export const formetDateAndTime = (date: string | Date | undefined): string => {
   const messageDate = dayjs(date);
 
-  return messageDate.format("MMM DD YYYY hh:mm A"); // Fixed: used "MMM DD YYYY"
+  return messageDate.format("MMM DD YYYY - hh:mm A"); // Fixed: used "MMM DD YYYY"
 };

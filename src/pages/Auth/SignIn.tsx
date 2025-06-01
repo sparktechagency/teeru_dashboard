@@ -1,12 +1,16 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { Checkbox } from "antd";
+import { Checkbox, Form } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import Container from "../../ui/Container";
 import ReusableForm from "../../ui/Form/ReuseForm";
 import ReuseInput from "../../ui/Form/ReuseInput";
 import ReuseButton from "../../ui/Button/ReuseButton";
 import { AllImages } from "../../../public/images/AllImages";
+import tryCatchWrapper from "../../utils/tryCatchWrapper";
+import { useAppDispatch } from "../../redux/hooks";
+import { useLoginMutation } from "../../redux/features/auth/authApi";
+import { setUserInfo } from "../../redux/features/auth/authSlice";
+import Cookies from "js-cookie";
 
 const inputStructure = [
   {
@@ -32,15 +36,30 @@ const inputStructure = [
 ];
 
 const SignIn = () => {
+  const dispatch = useAppDispatch();
   const router = useNavigate();
-  const onFinish = (values: any) => {
-    const data = {
-      ...values,
-      role: "admin",
-    };
-    console.log(data);
-    localStorage.setItem("user_into", JSON.stringify(data));
-    router("/");
+  const [form] = Form.useForm();
+
+  const [login] = useLoginMutation();
+
+  const onFinish = async (values) => {
+    const res = await tryCatchWrapper(login, { body: values }, "Logging In...");
+
+    if (res?.statusCode === 200) {
+      const userData = {
+        _id: res?.data?.user?._id,
+        fullName: res?.data?.user?.fullName,
+        email: res?.data?.user?.email,
+      };
+      dispatch(setUserInfo(userData));
+      Cookies.set("teeru_accessToken", res?.data?.accessToken, {
+        path: "/",
+        expires: 365,
+        secure: false,
+      });
+      form.resetFields();
+      router("/", { replace: true });
+    }
   };
   return (
     <div className="text-base-color">
@@ -64,7 +83,7 @@ const SignIn = () => {
               </div>
             </div>
             {/* -------- Form Start ------------ */}
-            <ReusableForm onSubmit={onFinish}>
+            <ReusableForm form={form} handleFinish={onFinish}>
               {inputStructure.map((input, index) => (
                 <ReuseInput
                   key={index}

@@ -1,28 +1,27 @@
-interface UserType {
-  id: number;
+interface ICard {
+  cardHolderName: string;
+  cardNumber: string;
+  expiryMonth: string;
+  expiryYear: string;
+  cvv: string;
+  cardBrand: string;
+}
+
+interface IUserType {
+  _id: string;
   fullName: string;
   email: string;
+  profileImage: string;
+  role: "user" | string;
   phone: string;
-  gender: string;
-  joiningDate: string;
-  userType: string;
+  gender: "male" | "female" | string;
+  coverImage: string;
+  isBlocked: boolean;
+  isDeleted: boolean;
+  address: string;
+  cards: ICard[] | [];
+  createdAt: string;
+  updatedAt: string;
 }
 
-interface PlayerType {
-  id: number;
-  fullName: string;
-  email: string;
-  golfHandicap: number;
-  matchesPlayed: number;
-  vector: string;
-}
-
-interface ManagerType {
-  id: number;
-  fullName: string;
-  email: string;
-  leaguesCreated: number;
-  matchesOrganized: number;
-}
-
-export type { UserType, PlayerType, ManagerType };
+export type { IUserType };

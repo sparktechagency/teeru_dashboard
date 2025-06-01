@@ -1,35 +1,47 @@
 import { useState } from "react";
 import DeleteModal from "../../ui/Modal/DeleteModal";
-import { eventData } from "../../../public/data/EventsData";
 import ReuseButton from "../../ui/Button/ReuseButton";
 import { GoPlusCircle } from "react-icons/go";
-import { EventType } from "../../types/EventType";
 import AdminAllEventTable from "../../ui/Tables/AdminAllEventTable";
 import AdminAddEventModal from "../../ui/Modal/Event/AdminAddEventModa";
 import AdminEditEventModal from "../../ui/Modal/Event/AdminEditEventModal";
+import tryCatchWrapper from "../../utils/tryCatchWrapper";
+import { IEventType } from "../../types";
+import {
+  useDeleteEventMutation,
+  useGetEventQuery,
+} from "../../redux/features/event/eventApi";
 
 const AdminAllEvent = () => {
-  const data = eventData;
+  const [deleteEvent] = useDeleteEventMutation();
   const [page, setPage] = useState(1);
 
   const limit = 12;
+
+  const { data, isFetching } = useGetEventQuery({
+    page,
+    limit,
+  });
+
+  const allEvent: IEventType[] = data?.data?.result;
+  const totalAllEvent = data?.data?.meta?.total;
 
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 
-  const [currentRecord, setCurrentRecord] = useState<EventType | null>(null);
+  const [currentRecord, setCurrentRecord] = useState<IEventType | null>(null);
 
   const showAddEventModal = () => {
     setIsAddModalVisible(true);
   };
 
-  const showEditEventModal = (record: EventType) => {
+  const showEditEventModal = (record: IEventType) => {
     setCurrentRecord(record);
     setIsEditModalVisible(true);
   };
 
-  const showDeleteModal = (record: EventType) => {
+  const showDeleteModal = (record: IEventType) => {
     setCurrentRecord(record);
     setIsDeleteModalVisible(true);
   };
@@ -41,9 +53,17 @@ const AdminAllEvent = () => {
     setCurrentRecord(null);
   };
 
-  const handleDelete = (data: EventType) => {
-    console.log(data);
+  const handleDelete = async (data: IEventType) => {
+    const res = await tryCatchWrapper(
+      deleteEvent,
+      { params: data?._id },
+      "Deleting Event..."
+    );
+    if (res.statusCode === 200) {
+      handleCancel();
+    }
   };
+
   return (
     <div>
       <div
@@ -67,13 +87,13 @@ const AdminAllEvent = () => {
             <GoPlusCircle className="" /> Create Event
           </ReuseButton>
           <AdminAllEventTable
-            data={data}
-            loading={false}
+            data={allEvent}
+            loading={isFetching}
             showEditModal={showEditEventModal}
             showDeleteModal={showDeleteModal}
             setPage={setPage}
             page={page}
-            total={data.length}
+            total={totalAllEvent}
             limit={limit}
           />
           <AdminAddEventModal
@@ -89,7 +109,7 @@ const AdminAllEvent = () => {
             isDeleteModalVisible={isDeleteModalVisible}
             handleCancel={handleCancel}
             currentRecord={currentRecord}
-            handleDelete={() => handleDelete(currentRecord as EventType)}
+            handleDelete={() => handleDelete(currentRecord as IEventType)}
           />
         </div>
       </div>

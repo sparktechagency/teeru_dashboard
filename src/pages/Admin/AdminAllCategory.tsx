@@ -1,28 +1,42 @@
 import { useState } from "react";
 import DeleteModal from "../../ui/Modal/DeleteModal";
-import categoryData from "../../../public/data/CategoryData";
-import { CategoryType } from "../../types/CategoryType";
 import AdminAllCategoryTable from "../../ui/Tables/AdminAllCategoryTable";
 import ReuseButton from "../../ui/Button/ReuseButton";
 import AdminAllCategoryModal from "../../ui/Modal/Category/AdminAddCategoryModal";
 import { GoPlusCircle } from "react-icons/go";
+import { ICategoryType } from "../../types";
+import tryCatchWrapper from "../../utils/tryCatchWrapper";
+import {
+  useDeleteCategoryMutation,
+  useGetCategoryQuery,
+} from "../../redux/features/category/categoryAPi";
 
 const AdminAllCategory = () => {
-  const data = categoryData;
+  const [deleteCategory] = useDeleteCategoryMutation();
   const [page, setPage] = useState(1);
 
   const limit = 12;
 
+  const { data, isFetching } = useGetCategoryQuery({
+    page,
+    limit,
+  });
+
+  const allCategory: ICategoryType[] = data?.data?.result;
+  const totalAllCategory = data?.data?.meta?.total;
+
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 
-  const [currentRecord, setCurrentRecord] = useState<CategoryType | null>(null);
+  const [currentRecord, setCurrentRecord] = useState<ICategoryType | null>(
+    null
+  );
 
   const showAddCategoryModal = () => {
     setIsAddModalVisible(true);
   };
 
-  const showDeleteModal = (record: CategoryType) => {
+  const showDeleteModal = (record: ICategoryType) => {
     setCurrentRecord(record);
     setIsDeleteModalVisible(true);
   };
@@ -33,9 +47,17 @@ const AdminAllCategory = () => {
     setCurrentRecord(null);
   };
 
-  const handleDelete = (data: CategoryType) => {
-    console.log(data);
+  const handleDelete = async (data: ICategoryType) => {
+    const res = await tryCatchWrapper(
+      deleteCategory,
+      { params: data?._id },
+      "Deleting..."
+    );
+    if (res.statusCode === 200) {
+      handleCancel();
+    }
   };
+
   return (
     <div>
       <div
@@ -59,12 +81,12 @@ const AdminAllCategory = () => {
             <GoPlusCircle className="" /> Add Category
           </ReuseButton>
           <AdminAllCategoryTable
-            data={data}
-            loading={false}
+            data={allCategory}
+            loading={isFetching}
             showDeleteModal={showDeleteModal}
             setPage={setPage}
             page={page}
-            total={data.length}
+            total={totalAllCategory}
             limit={limit}
           />
           <AdminAllCategoryModal
@@ -75,7 +97,7 @@ const AdminAllCategory = () => {
             isDeleteModalVisible={isDeleteModalVisible}
             handleCancel={handleCancel}
             currentRecord={currentRecord}
-            handleDelete={() => handleDelete(currentRecord as CategoryType)}
+            handleDelete={() => handleDelete(currentRecord as ICategoryType)}
           />
         </div>
       </div>

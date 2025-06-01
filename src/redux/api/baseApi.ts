@@ -14,7 +14,7 @@ const baseQuery = fetchBaseQuery({
     const changePassToken = getFromLocalStorage("teeru_otp_match_token");
 
     if (token) {
-      headers.set("authorization", `Bearer ${token}`);
+      headers.set("token", `${token}`);
     }
 
     if (signUpToken) {

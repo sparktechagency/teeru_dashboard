@@ -1,23 +1,24 @@
 import { Modal } from "antd";
-import { AllImages } from "../../../../public/images/AllImages";
-import { UserType } from "../../../types/userTypes";
+import { getImageUrl } from "../../../helpers/config/envConfig";
+import { IUserType } from "../../../types";
 interface AdminViewUsersModalProps {
   isUserViewModalVisible: boolean;
   handleCancel: () => void;
-  currentRecord: UserType | null;
+  currentRecord: IUserType | null;
 }
 const AdminViewUsersModal: React.FC<AdminViewUsersModalProps> = ({
   isUserViewModalVisible,
   handleCancel,
   currentRecord,
 }) => {
+  const imageApiUrl = getImageUrl();
   return (
     <Modal
       open={isUserViewModalVisible}
       onCancel={handleCancel}
       footer={null}
       centered
-      className="lg:!w-[450px]"
+      className="lg:!w-[500px]"
     >
       <div className="p-5">
         <div className="">
@@ -27,10 +28,10 @@ const AdminViewUsersModal: React.FC<AdminViewUsersModalProps> = ({
           <p className="text-sm sm:text-base lg:text-lg text-center mt-2 text-[#989898]">
             See all details about {currentRecord?.fullName}
           </p>
-          <div className="flex justify-center items-center gap-2 mt-5">
+          <div className="flex flex-col justify-center items-center gap-2 mt-5">
             {/* Avatar */}
             <img
-              src={AllImages.profile}
+              src={imageApiUrl + currentRecord?.profileImage}
               alt={currentRecord?.fullName}
               className="w-16 h-16 object-cover rounded"
             />

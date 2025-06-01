@@ -1,9 +1,25 @@
-interface EventType {
-  sid: string;
-  eventName: string;
-  category: string;
-  dateTime: string;
-  location: string;
+import { ICategoryType } from "./CategoryType";
+
+interface ITicketPrices {
+  tribune: number;
+  annexeLoge: number;
+  logeVIP: number;
+  logeVVIP: number;
+  serviceFee: number;
+  processingFee: number;
 }
 
-export type { EventType };
+interface IEventType {
+  ticketPrices: ITicketPrices;
+  _id: string;
+  name: string;
+  category: ICategoryType | null;
+  date: string;
+  time: string;
+  location: string;
+  isDeleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type { IEventType };

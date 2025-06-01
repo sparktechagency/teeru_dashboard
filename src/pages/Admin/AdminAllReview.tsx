@@ -1,27 +1,39 @@
 import { useState } from "react";
-import reviewData from "../../../public/data/Review";
 import AdminAllReviewTable from "../../ui/Tables/AdminAllReviewTable";
 import AdminViewReviewModal from "../../ui/Modal/Review/AdminViewReviewModal";
-import { ReviewType } from "../../types/ReviewType";
 import DeleteModal from "../../ui/Modal/DeleteModal";
+import {
+  useDeleteReviewMutation,
+  useGetReviewQuery,
+} from "../../redux/features/review/reviewApi";
+import { IReview } from "../../types";
+import tryCatchWrapper from "../../utils/tryCatchWrapper";
 
 const AdminAllReview = () => {
-  const data = reviewData;
+  const [deleteReview] = useDeleteReviewMutation();
   const [page, setPage] = useState(1);
 
   const limit = 12;
 
+  const { data, isFetching } = useGetReviewQuery({
+    page,
+    limit,
+  });
+
+  const allReview: IReview[] = data?.data?.result;
+  const totalAllReview = data?.data?.meta?.total;
+
   const [isViewModalVisible, setIsViewModalVisible] = useState(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 
-  const [currentRecord, setCurrentRecord] = useState<ReviewType | null>(null);
+  const [currentRecord, setCurrentRecord] = useState<IReview | null>(null);
 
-  const showViewUserModal = (record: ReviewType) => {
+  const showViewUserModal = (record: IReview) => {
     setCurrentRecord(record);
     setIsViewModalVisible(true);
   };
 
-  const showDeleteModal = (record: ReviewType) => {
+  const showDeleteModal = (record: IReview) => {
     setCurrentRecord(record);
     setIsDeleteModalVisible(true);
   };
@@ -32,8 +44,15 @@ const AdminAllReview = () => {
     setCurrentRecord(null);
   };
 
-  const handleDelete = (data: ReviewType) => {
-    console.log(data);
+  const handleDelete = async (data: IReview) => {
+    const res = await tryCatchWrapper(
+      deleteReview,
+      { params: data?._id },
+      "Deleting..."
+    );
+    if (res.statusCode === 200) {
+      handleCancel();
+    }
   };
   return (
     <div>
@@ -50,13 +69,13 @@ const AdminAllReview = () => {
         </div>
         <div className="mt-5 px-4">
           <AdminAllReviewTable
-            data={data}
-            loading={false}
+            data={allReview}
+            loading={isFetching}
             showViewModal={showViewUserModal}
             showDeleteModal={showDeleteModal}
             setPage={setPage}
             page={page}
-            total={data.length}
+            total={totalAllReview}
             limit={limit}
           />
           <AdminViewReviewModal
@@ -68,7 +87,7 @@ const AdminAllReview = () => {
             isDeleteModalVisible={isDeleteModalVisible}
             handleCancel={handleCancel}
             currentRecord={currentRecord}
-            handleDelete={() => handleDelete(currentRecord as ReviewType)}
+            handleDelete={() => handleDelete(currentRecord as IReview)}
           />
         </div>
       </div>

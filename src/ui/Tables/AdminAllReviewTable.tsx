@@ -1,14 +1,15 @@
 import { Rate, Space, Tooltip } from "antd";
 import { GoEye } from "react-icons/go";
 import ReuseTable from "../../utils/ReuseTable";
-import { ReviewType } from "../../types/ReviewType";
 import { MdDelete } from "react-icons/md";
+import { formetDateAndTime } from "../../utils/dateFormet";
+import { IReview } from "../../types";
 
 interface AdminAllReviewTableProps {
-  data: ReviewType[];
+  data: IReview[];
   loading: boolean;
-  showViewModal: (record: ReviewType) => void;
-  showDeleteModal: (record: ReviewType) => void;
+  showViewModal: (record: IReview) => void;
+  showDeleteModal: (record: IReview) => void;
   setPage: (page: number) => void;
   page: number;
   total: number;
@@ -34,37 +35,45 @@ const AdminAllReviewTable: React.FC<AdminAllReviewTableProps> = ({
     },
     {
       title: "Full Name",
-      dataIndex: "fullName", // Data key for fullName
+      dataIndex: ["userId", "fullName"], // Data key for fullName
       key: "fullName",
     },
     {
       title: "Email",
-      dataIndex: "email", // Data key for email
+      dataIndex: ["userId", "email"], // Data key for email
       key: "email",
     },
     {
       title: "Date",
-      dataIndex: "date", // Data key for date
-      key: "date",
+      dataIndex: "createdAt", // Data key for createdAt
+      key: "createdAt",
+      render: (text: string) => formetDateAndTime(text),
     },
     {
       title: "Rating",
       dataIndex: "rating", // Data key for rating
       key: "rating",
-      render: (rating: number) => <Rate allowHalf value={rating} disabled />,
+      render: (rating: number) => (
+        <div>
+          <Rate allowHalf value={rating} disabled />
+          <span className="ml-4">{rating}</span>
+        </div>
+      ),
     },
     {
       title: "Review",
-      dataIndex: "review", // Data key for review
-      key: "review",
+      dataIndex: "comment", // Data key for comment
+      key: "comment",
       render: (text: string) => (
-        <div className="max-w-[200px] truncate">{text.slice(0, 100)}</div>
+        <div className="max-w-[200px] truncate">
+          {text?.slice(0, 20) + "..."}
+        </div>
       ),
     },
     {
       title: "Action",
       key: "action",
-      render: (_: unknown, record: ReviewType) => (
+      render: (_: unknown, record: IReview) => (
         <Space size="middle">
           {/* View Details Tooltip */}
           <Tooltip placement="right" title="View Details">

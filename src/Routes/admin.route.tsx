@@ -12,12 +12,13 @@ import AdminAllUsers from "../pages/Admin/AdminAllUsers";
 import AdminAllReview from "../pages/Admin/AdminAllReview";
 import AdminAllCategory from "../pages/Admin/AdminAllCategory";
 import AdminAllEvent from "../pages/Admin/AdminAllEvent";
+import AdminAllEarning from "../pages/Admin/AdminAllEarning";
 
 export const adminPaths = [
   {
-    path: "dashboard",
+    path: "overview",
     element: <AdminDashboard />,
-    key: "dashboard",
+    key: "overview",
     name: "Dashboard",
     icon: dashboardLogo,
   },
@@ -53,6 +54,13 @@ export const adminPaths = [
     element: <AdminAllReview />,
     key: "review",
     name: "Review",
+    icon: reviewLogo,
+  },
+  {
+    path: "earning",
+    element: <AdminAllEarning />,
+    key: "earning",
+    name: "Earning",
     icon: reviewLogo,
   },
 ];

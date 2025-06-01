@@ -1,12 +1,14 @@
 import { Space, Tooltip } from "antd";
 import ReuseTable from "../../utils/ReuseTable";
 import { MdDelete } from "react-icons/md";
-import { CategoryType } from "../../types/CategoryType";
+import { ICategoryType } from "../../types";
+import { ColumnsType } from "antd/es/table";
+import { getImageUrl } from "../../helpers/config/envConfig";
 
 interface AdminAllCategoryTableProps {
-  data: CategoryType[];
+  data: ICategoryType[];
   loading: boolean;
-  showDeleteModal: (record: CategoryType) => void;
+  showDeleteModal: (record: ICategoryType) => void;
   setPage: (page: number) => void;
   page: number;
   total: number;
@@ -23,24 +25,26 @@ const AdminAllCategoryTable: React.FC<AdminAllCategoryTableProps> = ({
   total,
   limit,
 }) => {
-  const columns = [
+  const imageApiUrl = getImageUrl();
+  const columns: ColumnsType<ICategoryType> = [
     {
       title: "#UID",
+      dataIndex: "_id",
       render: (_: unknown, __: unknown, index: number) => index + 1,
       key: "_id",
     },
     {
       title: "Category Name",
-      dataIndex: "categoryName", // Data key for categoryName
-      key: "categoryName",
+      dataIndex: "name", // Data key for name
+      key: "name",
     },
     {
       title: "Category Image",
-      dataIndex: "categoryImage", // Data key for categoryImage
-      key: "categoryImage",
+      dataIndex: "image", // Data key for image
+      key: "image",
       render: (image: string) => (
         <img
-          src={image}
+          src={imageApiUrl + image}
           alt="Category"
           className="w-auto h-20 object-cover rounded"
         />
@@ -49,7 +53,7 @@ const AdminAllCategoryTable: React.FC<AdminAllCategoryTableProps> = ({
     {
       title: "Action",
       key: "action",
-      render: (_: unknown, record: CategoryType) => (
+      render: (_: unknown, record: ICategoryType) => (
         <Space size="middle">
           <Tooltip placement="left" title="Block this User">
             <button

@@ -1,9 +1,12 @@
-import { Modal } from "antd";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Form, Modal } from "antd";
 import ReusableForm from "../../Form/ReuseForm";
 import ReuseInput from "../../Form/ReuseInput";
 import ReuseUpload from "../../Form/ReuseUpload";
 import { FiUpload } from "react-icons/fi";
 import ReuseButton from "../../Button/ReuseButton";
+import tryCatchWrapper from "../../../utils/tryCatchWrapper";
+import { useAddCategoryMutation } from "../../../redux/features/category/categoryAPi";
 
 interface AdminAllCategoryModalProps {
   isAddModalVisible: boolean;
@@ -14,7 +17,29 @@ const AdminAllCategoryModal: React.FC<AdminAllCategoryModalProps> = ({
   isAddModalVisible,
   handleCancel,
 }) => {
-  //   const [blockUser] = useBlockUserMutation();
+  const [addCategory] = useAddCategoryMutation();
+  const [form] = Form.useForm();
+
+  const handleAddCategory = async (values: any) => {
+    const formData = new FormData();
+    const file = values.image[0]?.originFileObj;
+
+    if (file) {
+      formData.append("image", file);
+    }
+
+    formData.append("name", values.name);
+
+    const res = await tryCatchWrapper(
+      addCategory,
+      { body: formData },
+      "Adding New Category..."
+    );
+    if (res.statusCode === 201) {
+      form.resetFields();
+      handleCancel();
+    }
+  };
 
   return (
     <Modal
@@ -24,7 +49,7 @@ const AdminAllCategoryModal: React.FC<AdminAllCategoryModalProps> = ({
       centered
     >
       <div className="p-5">
-        <ReusableForm onSubmit={() => {}}>
+        <ReusableForm form={form} handleFinish={handleAddCategory}>
           <ReuseInput
             label="Category Name"
             inputType="normal"
