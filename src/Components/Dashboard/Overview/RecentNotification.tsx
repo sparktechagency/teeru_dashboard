@@ -1,5 +1,8 @@
 import { Link } from "react-router-dom";
 import { AllIcons } from "../../../../public/images/AllImages";
+import Cookies from "js-cookie";
+import { decodedToken } from "../../../utils/jwt";
+import { IJwtPayload } from "../../../types";
 
 const activities = [
   {
@@ -81,7 +84,8 @@ const activities = [
 ];
 
 const RecentNotification = () => {
-  const user = JSON.parse(localStorage.getItem("user_into") || "null");
+  const token = Cookies.get("teeru_accessToken");
+  const user = decodedToken(token || "") as IJwtPayload;
   return (
     <div
       className="w-full max-h-[300px] xl:max-h-[600px] overflow-y-auto  rounded-xl relative"

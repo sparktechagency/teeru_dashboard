@@ -1,4 +1,7 @@
 import { Navigate } from "react-router-dom";
+import Cookies from "js-cookie";
+import { decodedToken } from "../utils/jwt";
+import { IJwtPayload } from "../types";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -6,13 +9,19 @@ interface ProtectedRouteProps {
 }
 
 function ProtectedRoute({ children, role }: ProtectedRouteProps) {
-  const user = JSON.parse(localStorage.getItem("user_into") || "null");
+  const token = Cookies.get("teeru_accessToken");
 
-  if (!user || user.role !== role) {
-    return <Navigate to="/sign-in" replace />;
+  if (token) {
+    const user = decodedToken(token || "") as IJwtPayload;
+
+    if (!user || user.role !== role) {
+      return <Navigate to="/sign-in" replace />;
+    }
+
+    return <>{children}</>;
+  } else {
+    return <Navigate to="/signin" replace />;
   }
-
-  return <>{children}</>;
 }
 
 export default ProtectedRoute;

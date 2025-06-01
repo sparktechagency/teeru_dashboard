@@ -16,9 +16,16 @@ import Sider from "antd/es/layout/Sider";
 import Topbar from "../Shared/Topbar";
 import { AllImages } from "../../../public/images/AllImages";
 import { adminCommonPaths } from "../../Routes/admin.common.route";
+import { decodedToken } from "../../utils/jwt";
+import { IJwtPayload } from "../../types";
+import Cookies from "js-cookie";
+import { useAppDispatch } from "../../redux/hooks";
+import { clearAuth } from "../../redux/features/auth/authSlice";
 
 const DashboardLayout = () => {
-  const userRole = JSON.parse(localStorage.getItem("user_into") || "null");
+  const dispatch = useAppDispatch();
+  const token = Cookies.get("teeru_accessToken");
+  const userRole = decodedToken(token || "") as IJwtPayload;
   const location = useLocation();
 
   const defaultUrl = userRole?.role === "admin" ? "/admin" : "/";
@@ -57,6 +64,13 @@ const DashboardLayout = () => {
         sidebarItemsGenerator(adminCommonPaths, userRole?.role)
       : [];
 
+  const handleLogout = () => {
+    dispatch(clearAuth());
+    Cookies.remove("teeru_accessToken");
+    window.location.href = "/signin";
+    window.location.reload();
+  };
+
   otherItems.push({
     key: "logout",
     icon: (
@@ -69,7 +83,7 @@ const DashboardLayout = () => {
       />
     ),
     label: (
-      <div onClick={() => localStorage.removeItem("user_into")}>
+      <div onClick={handleLogout}>
         <NavLink to="/sign-in">Logout</NavLink>
       </div>
     ),

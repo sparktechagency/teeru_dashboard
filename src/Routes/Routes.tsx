@@ -4,6 +4,7 @@ import {
   useNavigate,
 } from "react-router-dom";
 import { useEffect } from "react";
+import Cookies from "js-cookie";
 
 import Loading from "../ui/Loading";
 import { routeGenerator } from "../utils/routesGenerator";
@@ -19,25 +20,26 @@ import UpdatePassword from "../pages/Auth/UpdatePassword";
 import NotFound from "../ui/NotFound/NotFound";
 import DashboardLayout from "../Components/Layout/DashboardLayout";
 import { adminCommonPaths } from "./admin.common.route";
-
-interface User {
-  email: string;
-  password: string;
-  role: string;
-}
+import { decodedToken } from "../utils/jwt";
+import { IJwtPayload } from "../types";
 
 // eslint-disable-next-line react-refresh/only-export-components
 function AuthRedirect() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const user = JSON.parse(
-      localStorage.getItem("user_into") || "null"
-    ) as User | null;
-    if (user && user.role) {
-      navigate(`/${user.role}/dashboard`, { replace: true });
+    const token = Cookies.get("teeru_accessToken");
+
+    if (token) {
+      const user = decodedToken(token || "") as IJwtPayload | undefined;
+
+      if (user && user.role === "admin") {
+        navigate(`/${user.role}/overview`, { replace: true });
+      } else {
+        navigate("/signin", { replace: true });
+      }
     } else {
-      navigate("/sign-in", { replace: true });
+      navigate("/signin", { replace: true });
     }
   }, [navigate]);
 

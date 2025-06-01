@@ -8,10 +8,10 @@ const baseQuery = fetchBaseQuery({
   baseUrl: getBaseUrl(),
   credentials: "include",
   prepareHeaders: (headers) => {
-    const token = Cookies.get("pianofesta_accessToken");
-    const signUpToken = getFromLocalStorage("pianofesta_createUserToken");
+    const token = Cookies.get("teeru_accessToken");
+    const signUpToken = getFromLocalStorage("teeru_createUserToken");
 
-    const changePassToken = getFromLocalStorage("pianofesta_otp_match_token");
+    const changePassToken = getFromLocalStorage("teeru_otp_match_token");
 
     if (token) {
       headers.set("authorization", `Bearer ${token}`);

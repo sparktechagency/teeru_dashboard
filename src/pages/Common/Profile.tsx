@@ -4,6 +4,9 @@ import { AllImages } from "../../../public/images/AllImages";
 import ReuseButton from "../../ui/Button/ReuseButton";
 import ReusableForm from "../../ui/Form/ReuseForm";
 import ReuseInput from "../../ui/Form/ReuseInput";
+import Cookies from "js-cookie";
+import { decodedToken } from "../../utils/jwt";
+import { IJwtPayload } from "../../types";
 
 const inputStructure = [
   {
@@ -39,7 +42,8 @@ const inputStructure = [
 ];
 
 const Profile = () => {
-  const user = JSON.parse(localStorage.getItem("user_into") || "null");
+  const token = Cookies.get("teeru_accessToken");
+  const user = decodedToken(token || "") as IJwtPayload;
   const profileData = {
     userName: "James Mitchell",
     email: "emily@gmail.com",

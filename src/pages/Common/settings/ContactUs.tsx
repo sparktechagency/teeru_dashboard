@@ -16,9 +16,7 @@ const ContactUs = () => {
       style={{ boxShadow: "0px 0px 5px  rgba(0, 0, 0, 0.25)" }}
     >
       <div className="bg-secondary-color w-full flex items-center p-5 mb-10  rounded-tl-xl rounded-tr-xl">
-        <p className="text-2xl text-primary-color font-semibold">
-          Privacy policy
-        </p>
+        <p className="text-2xl text-primary-color font-semibold">Contact us</p>
       </div>
       <div className=" flex justify-center items-center">
         <div className="w-[95%]">
