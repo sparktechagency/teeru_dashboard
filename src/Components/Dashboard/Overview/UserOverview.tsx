@@ -1,11 +1,24 @@
 import YearOption from "../../../utils/YearOption";
-import { useState } from "react";
 import Admin_Line_Chart from "../../Chart/LineChart";
 
-const UserOverview = () => {
-  const currentYear = new Date().getFullYear();
-  const [year, setYear] = useState(currentYear);
+export interface IMonthlyStats {
+  month: number;
+  monthName: string;
+  userCount: number;
+  totalEarnings: number;
+}
 
+const UserOverview = ({
+  monthlyOverview,
+  currentYear,
+  setYear,
+  isFetching,
+}: {
+  monthlyOverview: IMonthlyStats[];
+  currentYear: number;
+  setYear: (year: number) => void;
+  isFetching: boolean;
+}) => {
   return (
     <div
       className="w-full p-3 bg-[#FFFFFF] rounded-lg"
@@ -33,7 +46,10 @@ const UserOverview = () => {
         </div>
       </div>
       <div>
-        <Admin_Line_Chart />
+        <Admin_Line_Chart
+          isFetching={isFetching}
+          monthlyOverview={monthlyOverview}
+        />
       </div>
     </div>
   );

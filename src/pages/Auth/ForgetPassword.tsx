@@ -7,6 +7,10 @@ import ReusableForm from "../../ui/Form/ReuseForm";
 import ReuseInput from "../../ui/Form/ReuseInput";
 import ReuseButton from "../../ui/Button/ReuseButton";
 import { AuthImages } from "../../../public/images/AllImages";
+import { Form } from "antd";
+import tryCatchWrapper from "../../utils/tryCatchWrapper";
+import { useForgetPasswordMutation } from "../../redux/features/auth/authApi";
+import Cookies from "js-cookie";
 
 const inputStructure = [
   {
@@ -22,10 +26,23 @@ const inputStructure = [
 ];
 
 const ForgotPassword = () => {
+  const [form] = Form.useForm();
   const router = useNavigate();
-  const onFinish = (values: any) => {
-    console.log("Received values of forgot form:", values);
-    router("/forgot-password/otp-verify");
+  const [forgetPassword] = useForgetPasswordMutation();
+  const onFinish = async (values: any) => {
+    const res = await tryCatchWrapper(
+      forgetPassword,
+      { body: values },
+      "Sending OTP..."
+    );
+    if (res?.statusCode === 200) {
+      form.resetFields();
+      Cookies.set("teeru_forgetToken", res.data.forgetToken, {
+        path: "/",
+        expires: 1,
+      });
+      router("/forgot-password/otp-verify");
+    }
   };
   return (
     <div className="text-base-color">
@@ -47,7 +64,7 @@ const ForgotPassword = () => {
               </p>
             </div>
 
-            <ReusableForm onSubmit={onFinish}>
+            <ReusableForm form={form} handleFinish={onFinish}>
               {inputStructure.map((input, index) => (
                 <ReuseInput
                   key={index}

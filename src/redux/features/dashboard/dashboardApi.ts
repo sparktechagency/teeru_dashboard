@@ -4,10 +4,13 @@ import { tagTypes } from "../../tagTypes";
 const dashboardApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getUserRatio: builder.query({
-      query: () => {
+      query: ({ year }) => {
         return {
           url: "/users/all-users-overview",
           method: "GET",
+          params: {
+            year,
+          },
         };
       },
       providesTags: [tagTypes.dashboard],

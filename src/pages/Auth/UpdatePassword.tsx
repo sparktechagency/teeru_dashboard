@@ -5,8 +5,11 @@ import Container from "../../ui/Container";
 import ReusableForm from "../../ui/Form/ReuseForm";
 import ReuseInput from "../../ui/Form/ReuseInput";
 import ReuseButton from "../../ui/Button/ReuseButton";
-import { FormInstance } from "antd";
+import { Form, FormInstance } from "antd";
 import { AuthImages } from "../../../public/images/AllImages";
+import { useResetPasswordMutation } from "../../redux/features/auth/authApi";
+import tryCatchWrapper from "../../utils/tryCatchWrapper";
+import Cookies from "js-cookie";
 
 const inputStructure = [
   {
@@ -46,10 +49,25 @@ const inputStructure = [
 ];
 
 const UpdatePassword = () => {
+  const [resetPassword] = useResetPasswordMutation();
+  const [form] = Form.useForm();
   const router = useNavigate();
-  const onFinish = (values: any) => {
-    console.log("Received values of update form:", values);
-    router("/sign-in");
+  const onFinish = async (values: any) => {
+    const data = {
+      newPassword: values.password,
+      confirmPassword: values.confirmPassword,
+    };
+
+    const res = await tryCatchWrapper(
+      resetPassword,
+      { body: data },
+      "Changing Password..."
+    );
+    if (res?.statusCode === 200) {
+      form.resetFields();
+      Cookies.remove("teeru_forgetOtpMatchToken");
+      router("/sign-in");
+    }
   };
 
   return (
@@ -73,7 +91,7 @@ const UpdatePassword = () => {
             </div>
 
             {/* -------- Form Start ------------ */}
-            <ReusableForm onSubmit={onFinish}>
+            <ReusableForm form={form} handleFinish={onFinish}>
               {inputStructure.map((input, index) => (
                 <ReuseInput
                   key={index}

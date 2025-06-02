@@ -11,7 +11,8 @@ const baseQuery = fetchBaseQuery({
     const token = Cookies.get("teeru_accessToken");
     const signUpToken = getFromLocalStorage("teeru_createUserToken");
 
-    const changePassToken = getFromLocalStorage("teeru_otp_match_token");
+    const changePassToken = Cookies.get("teeru_forgetToken");
+    const forgetOtpMatchToken = Cookies.get("teeru_forgetOtpMatchToken");
 
     if (token) {
       headers.set("token", `${token}`);
@@ -22,7 +23,10 @@ const baseQuery = fetchBaseQuery({
     }
 
     if (changePassToken) {
-      headers.set("Forget-password", `Forget-password ${changePassToken}`);
+      headers.set("token", `${changePassToken}`);
+    }
+    if (forgetOtpMatchToken) {
+      headers.set("token", `${forgetOtpMatchToken}`);
     }
 
     return headers;

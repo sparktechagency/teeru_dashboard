@@ -11,6 +11,7 @@ import { useAppDispatch } from "../../redux/hooks";
 import { useLoginMutation } from "../../redux/features/auth/authApi";
 import { setUserInfo } from "../../redux/features/auth/authSlice";
 import Cookies from "js-cookie";
+import { toast } from "sonner";
 
 const inputStructure = [
   {
@@ -45,7 +46,7 @@ const SignIn = () => {
   const onFinish = async (values) => {
     const res = await tryCatchWrapper(login, { body: values }, "Logging In...");
 
-    if (res?.statusCode === 200) {
+    if (res?.statusCode === 200 && res?.data?.user?.role === "admin") {
       const userData = {
         _id: res?.data?.user?._id,
         fullName: res?.data?.user?.fullName,
@@ -59,6 +60,11 @@ const SignIn = () => {
       });
       form.resetFields();
       router("/", { replace: true });
+    } else if (res?.statusCode === 200 && res?.data?.user?.role !== "admin") {
+      form.resetFields();
+      toast.error("Access Denied", {
+        duration: 2000,
+      });
     }
   };
   return (

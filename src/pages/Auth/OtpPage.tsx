@@ -6,19 +6,31 @@ import { useNavigate } from "react-router-dom";
 import Container from "../../ui/Container";
 import ReuseButton from "../../ui/Button/ReuseButton";
 import { AuthImages } from "../../../public/images/AllImages";
+import { useForgetOtpVerifyMutation } from "../../redux/features/auth/authApi";
+import tryCatchWrapper from "../../utils/tryCatchWrapper";
+import Cookies from "js-cookie";
 
 const OTPVerify = () => {
+  const [form] = Form.useForm();
+  const [otpMatch] = useForgetOtpVerifyMutation();
   const router = useNavigate();
   const [otp, setOtp] = useState("");
 
-  const handleOTPSubmit = () => {
-    if (otp.length === 6) {
-      console.log("OTP:", otp);
-      if (window?.location?.pathname === "/sign-up/otp-verify") {
-        router("/");
-      } else {
-        router("/update-password");
-      }
+  const handleOTPSubmit = async () => {
+    const res = await tryCatchWrapper(
+      otpMatch,
+      { body: { otp: otp } },
+      "Verifying..."
+    );
+    if (res?.statusCode === 200) {
+      form.resetFields();
+      Cookies.remove("teeru_forgetToken");
+      Cookies.set("teeru_forgetOtpMatchToken", res.data.forgetOtpMatchToken, {
+        path: "/",
+        expires: 1,
+      });
+
+      router("/update-password");
     }
   };
 
@@ -43,6 +55,7 @@ const OTPVerify = () => {
             </div>
 
             <Form
+              form={form}
               onFinish={handleOTPSubmit}
               layout="vertical"
               className="bg-transparent w-full"
@@ -50,7 +63,7 @@ const OTPVerify = () => {
               <Form.Item className="">
                 <div className="flex justify-center items-center">
                   <OTPInput
-                    inputStyle="!w-[35px] !h-[40px] sm:!w-[60px] sm:!h-[50px] text-[20px] sm:text-[30px] !bg-primary-color border !border-base-color/30
+                    inputStyle="!w-[35px] !h-[40px] sm:!w-[60px] sm:!h-[70px] text-[20px] sm:text-[30px] !bg-primary-color border !border-base-color/30
                       rounded-lg mr-[10px] sm:mr-[20px] !text-base-color "
                     value={otp}
                     onChange={setOtp}
