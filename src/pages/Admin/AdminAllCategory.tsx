@@ -67,7 +67,7 @@ const AdminAllCategory = () => {
         <div className="bg-secondary-color w-full p-5 rounded-tl-xl rounded-tr-xl">
           <div className=" flex items-center justify-between">
             <p className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl text-primary-color font-semibold">
-              Reviews
+              Categories
             </p>
           </div>
         </div>
