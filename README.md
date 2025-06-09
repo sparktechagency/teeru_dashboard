@@ -25,23 +25,33 @@ The **Teeru Dashboard** is a modern web-based admin panel built with **React 19*
 ## 🗂️ Project Structure
 
 src/
+
 ├── Components/ # Reusable components
+
 ├── helpers/ # Utility functions
+
 ├── lib/ # External integrations or libs
+
 ├── pages/ # Application pages
+
 ├── redux/ # Redux store, slices
-├── Routes/ # Route definitions
+
+├── Routes/ # Route definition
+
 ├── theme/ # Theme customization
+
 ├── types/ # Custom TypeScript types
+
 ├── ui/ # UI primitives (buttons, inputs)
+
 ├── utils/ # Additional utilities
+
 ├── App.tsx # Root component
+
 ├── main.tsx # App entry point
+
 ├── vite-env.d.ts # Vite environment types
 
-yaml
-Copy
-Edit
 
 ---
 
@@ -50,40 +60,24 @@ Edit
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/teeru-dashboard.git
-cd teeru-dashboard
+git clone https://github.com/bdCalling-Sdt-hub/teeru_dashboard.git
+cd teeru_dashboard
 2. Install Dependencies
 Using Yarn:
 
-bash
-Copy
-Edit
 yarn install
 Or using npm:
-
-bash
-Copy
-Edit
 npm install
+
 3. Create Environment File
 Copy .env.example to .env:
 
-bash
-Copy
-Edit
 cp .env.example .env
 Update the VITE_PUBLIC_SERVER_URL with your backend URL:
 
-env
-Copy
-Edit
 VITE_PUBLIC_SERVER_URL=http://<server_ip>:<port>/api/v1  # Replace with your actual VPS IP and port
-🧪 Available Scripts
-Command	Description
-yarn dev	Start development server with hot reload
-yarn build	Build the app for production
-yarn preview	Preview production build
-yarn lint	Lint the project using ESLint
+VITE_PUBLIC_IMAGE_URL=http://<server_ip>:<port>          # Replace with your actual VPS IP and port   
+
 
 🖼️ UI Features
 Responsive dashboard layout
@@ -102,14 +96,11 @@ Customizable theming with Tailwind + AntD
 
 📩 Contact
 👤 Rasel Chowdhury
-📧 rasel@example.com (replace with your actual email)
+📧 raseldev847@gmail.com
 
 📃 License
 This project is licensed under the ISC License.
 
-yaml
-Copy
-Edit
 
 ---
 
