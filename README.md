@@ -73,7 +73,7 @@ npm install
 Copy .env.example to .env:
 
 cp .env.example .env
-Update the VITE_PUBLIC_SERVER_URL with your backend URL:
+Update the VITE_PUBLIC_SERVER_URL and VITE_PUBLIC_IMAGE_URL with your backend URL:
 
 VITE_PUBLIC_SERVER_URL=http://<server_ip>:<port>/api/v1  # Replace with your actual VPS IP and port
 VITE_PUBLIC_IMAGE_URL=http://<server_ip>:<port>          # Replace with your actual VPS IP and port   
