@@ -2,6 +2,7 @@ import { Modal, Rate } from "antd";
 import { formetDateAndTime } from "../../../utils/dateFormet";
 import { IReview } from "../../../types";
 import { getImageUrl } from "../../../helpers/config/envConfig";
+import { useTranslation } from "react-i18next";
 
 interface AdminViewReviewModalProps {
   isViewModalVisible: boolean;
@@ -14,6 +15,7 @@ const AdminViewReviewModal: React.FC<AdminViewReviewModalProps> = ({
   handleCancel,
   currentRecord,
 }) => {
+  const { t } = useTranslation();
   const imageApiUrl = getImageUrl();
   return (
     <Modal
@@ -26,10 +28,11 @@ const AdminViewReviewModal: React.FC<AdminViewReviewModalProps> = ({
       <div className="p-5">
         <div className="">
           <h3 className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-bold text-secondary-color text-center">
-            User Feedback
+            {t("review_detail.feedback")}
           </h3>
           <p className="text-sm sm:text-base lg:text-lg text-center mt-2">
-            See full details feedback from {currentRecord?.userId?.fullName}
+            {t("review_detail.see_all_details")}{" "}
+            {currentRecord?.userId?.fullName}
           </p>
           <div className="flex justify-center items-center gap-1 mt-5">
             {/* Avatar */}
@@ -44,36 +47,43 @@ const AdminViewReviewModal: React.FC<AdminViewReviewModalProps> = ({
           </div>
 
           <div className="mt-3">
-            <div className="text-lg  ">
+            <div className="text-lg">
               <div className="flex items-center gap-2 mb-2">
-                <span className="font-medium">Name: </span>
+                <span className="font-medium">
+                  {t("review_table.full_name")}:{" "}
+                </span>
                 <span className="text-secondary-color">
                   {currentRecord?.userId?.fullName}
                 </span>
               </div>
 
-              <div className="flex items-center  gap-2 mb-2">
-                <span className="font-medium">Email:</span>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="font-medium">{t("review_table.email")}:</span>
                 <span>{currentRecord?.userId?.email}</span>
               </div>
 
-              <div className="flex items-center  gap-2 mb-2">
-                <span className="font-medium">Rating :</span>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="font-medium">
+                  {t("review_table.rating")} :
+                </span>
                 <span className="text-justify pt-0 flex items-center">
                   <Rate disabled defaultValue={currentRecord?.rating} />
                   <span className="ml-2">{currentRecord?.rating}</span>
                 </span>
               </div>
 
-              <div className="flex items-center  gap-2 mb-2">
-                <span className="font-medium">Date :</span>
-                <span className="text-justify pt-0 ">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="font-medium">{t("review_table.date")} :</span>
+                <span className="text-justify pt-0">
                   {formetDateAndTime(currentRecord?.createdAt)}
                 </span>
               </div>
-              <div className="flex items-start  gap-2 mb-2">
-                <span className="font-medium text-nowrap">Review :</span>
-                <span className="text-justify pt-0 ">
+
+              <div className="flex items-start gap-2 mb-2">
+                <span className="font-medium text-nowrap">
+                  {t("review_table.review")} :
+                </span>
+                <span className="text-justify pt-0">
                   {currentRecord?.comment}
                 </span>
               </div>

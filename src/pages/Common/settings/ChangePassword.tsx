@@ -9,58 +9,61 @@ import { useChangePasswordMutation } from "../../../redux/features/auth/authApi"
 import { clearAuth } from "../../../redux/features/auth/authSlice";
 import { useAppDispatch } from "../../../redux/hooks";
 import Cookies from "js-cookie";
-
-const inputStructure = [
-  {
-    name: "currentPassword",
-    type: "password",
-    inputType: "password",
-    label: "Current password",
-    placeholder: "Enter your current password",
-    labelClassName: "!font-medium",
-    inputClassName: "!py-2",
-    rules: [{ required: true, message: "Current password is required" }],
-    showPasswordToggle: true,
-  },
-  {
-    name: "newPassword",
-    type: "password",
-    inputType: "password",
-    label: "New password",
-    placeholder: "Enter your new password",
-    labelClassName: "!font-medium",
-    inputClassName: "!py-2",
-    rules: [{ required: true, message: "New password is required" }],
-    showPasswordToggle: true,
-  },
-  {
-    name: "confirmNewPassword",
-    type: "password",
-    inputType: "password",
-    label: "Confirm New password",
-    placeholder: "Enter your new password again",
-    labelClassName: "!font-medium",
-    inputClassName: "!py-2",
-    rules: [
-      { required: true, message: "Confirm Password is required" },
-      ({
-        getFieldValue,
-      }: {
-        getFieldValue: FormInstance["getFieldValue"];
-      }) => ({
-        validator(_: unknown, value: string) {
-          if (!value || getFieldValue("newPassword") === value) {
-            return Promise.resolve();
-          }
-          return Promise.reject(new Error("Password does not match!"));
-        },
-      }),
-    ],
-    showPasswordToggle: true,
-  },
-];
+import { useTranslation } from "react-i18next";
 
 const ChangePassword = () => {
+  const { t } = useTranslation();
+
+  const inputStructure = [
+    {
+      name: "currentPassword",
+      type: "password",
+      inputType: "password",
+      label: t("change_password.current_password"),
+      placeholder: "******",
+      labelClassName: "!font-medium",
+      inputClassName: "!py-2",
+      rules: [{ required: true, message: "Current password is required" }],
+      showPasswordToggle: true,
+    },
+    {
+      name: "newPassword",
+      type: "password",
+      inputType: "password",
+      label: t("change_password.new_password"),
+      placeholder: "******",
+      labelClassName: "!font-medium",
+      inputClassName: "!py-2",
+      rules: [{ required: true, message: "New password is required" }],
+      showPasswordToggle: true,
+    },
+    {
+      name: "confirmNewPassword",
+      type: "password",
+      inputType: "password",
+      label: t("change_password.confirm_new_password"),
+      placeholder: "******",
+      labelClassName: "!font-medium",
+      inputClassName: "!py-2",
+      rules: [
+        { required: true, message: "Confirm Password is required" },
+        ({
+          getFieldValue,
+        }: {
+          getFieldValue: FormInstance["getFieldValue"];
+        }) => ({
+          validator(_: unknown, value: string) {
+            if (!value || getFieldValue("newPassword") === value) {
+              return Promise.resolve();
+            }
+            return Promise.reject(new Error("Password does not match!"));
+          },
+        }),
+      ],
+      showPasswordToggle: true,
+    },
+  ];
+
   const [form] = Form.useForm();
   const [updatePassword] = useChangePasswordMutation();
   const dispatch = useAppDispatch();
@@ -92,7 +95,7 @@ const ChangePassword = () => {
       <div className="bg-secondary-color w-full p-5 mb-10  rounded-tl-xl rounded-tr-xl">
         <div className=" w-[95%] mx-auto  flex items-center ">
           <p className="text-2xl text-primary-color font-semibold">
-            Change Password
+            {t("sidebar.change-password")}
           </p>
         </div>
       </div>
@@ -118,7 +121,7 @@ const ChangePassword = () => {
               variant="secondary"
               className="w-full mt-4"
             >
-              Change Password
+              {t("sidebar.change-password")}
             </ReuseButton>
           </ReusableForm>
         </div>

@@ -11,21 +11,25 @@ import { Form } from "antd";
 import tryCatchWrapper from "../../utils/tryCatchWrapper";
 import { useForgetPasswordMutation } from "../../redux/features/auth/authApi";
 import Cookies from "js-cookie";
-
-const inputStructure = [
-  {
-    name: "email",
-    type: "email",
-    inputType: "email",
-    label: "Email",
-    placeholder: "Enter your email",
-    labelClassName: "!font-medium",
-    inputClassName: "!py-2",
-    rules: [{ required: true, message: "Email is required" }],
-  },
-];
+import { useTranslation } from "react-i18next";
+import LanguageChange from "./LanguageChange";
 
 const ForgotPassword = () => {
+  const { t } = useTranslation();
+
+  const inputStructure = [
+    {
+      name: "email",
+      type: "email",
+      inputType: "email",
+      label: t("fortgotPassword.email"),
+      placeholder: "Enter your email",
+      labelClassName: "!font-medium",
+      inputClassName: "!py-2",
+      rules: [{ required: true, message: "Email is required" }],
+    },
+  ];
+
   const [form] = Form.useForm();
   const router = useNavigate();
   const [forgetPassword] = useForgetPasswordMutation();
@@ -47,7 +51,9 @@ const ForgotPassword = () => {
   return (
     <div className="text-base-color">
       <Container>
-        <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 items-center justify-items-center-safe gap-5 ">
+        <LanguageChange />
+
+        <div className="min-h-[90vh] grid grid-cols-1 lg:grid-cols-2 items-center justify-items-center-safe gap-5 ">
           <img
             src={AuthImages.ForgotPassword}
             alt="logo"
@@ -56,11 +62,10 @@ const ForgotPassword = () => {
           <div className="w-full sm:w-[70%] lg:w-full mx-auto">
             <div className=" mt-5 mb-8">
               <h1 className="text-3xl lg:text-4xl font-semibold text-base-color mb-5">
-                Forget password
+                {t("fortgotPassword.title")}
               </h1>
               <p className="text-xl lg:text-2xl font-medium mb-2 text-base-color/90">
-                Enter your email address to ger a verification code for
-                resetting your password.
+                {t("fortgotPassword.info")}
               </p>
             </div>
 
@@ -85,7 +90,7 @@ const ForgotPassword = () => {
                 className="!py-6 !px-9 !text-base sm:!text-lg lg:!text-xl !rounded-xl"
                 // icon={allIcons.arrowRight}
               >
-                Get OTP
+                {t("fortgotPassword.button")}
               </ReuseButton>
             </ReusableForm>
 
@@ -95,7 +100,7 @@ const ForgotPassword = () => {
                 className="flex justify-center items-center  gap-2 "
               >
                 <FaArrowLeftLong className="size-4 " />
-                <span>Back to log in</span>
+                <span>{t("fortgotPassword.back")}</span>
               </Link>
             </div>
           </div>

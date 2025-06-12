@@ -27,7 +27,7 @@ const authApi = baseApi.injectEndpoints({
       query: () => {
         return {
           url: `/otp/resend-otp`,
-          method: "POST",
+          method: "PATCH",
         };
       },
       invalidatesTags: [tagTypes.auth],

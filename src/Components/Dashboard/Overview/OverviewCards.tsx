@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { AllImages } from "../../../../public/images/AllImages";
 
 const OverviewCard = ({
@@ -7,18 +8,19 @@ const OverviewCard = ({
   totalUser: number;
   totalEarning: number;
 }) => {
+  const { t } = useTranslation();
   const data = [
     {
       id: 1,
       background: "#507D18",
-      name: "Total Users",
+      name: t("dashboard.total_user"),
       icon: AllImages.users,
       count: totalUser,
     },
     {
       id: 2,
       background: "#ACD03D",
-      name: "Total Earning",
+      name: t("dashboard.total_earning"),
       icon: AllImages.earning,
       count: `$${totalEarning}`,
     },

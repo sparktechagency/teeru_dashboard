@@ -13,6 +13,8 @@ import earning from "./earning.png";
 import league from "./league.png";
 import football from "./football.png";
 import basketball from "./basketball.png";
+import english from "./english.png";
+import france from "./france.png";
 
 // Icons
 
@@ -26,6 +28,8 @@ export const AllImages = {
   league,
   football,
   basketball,
+  english,
+  france,
 };
 
 export const AuthImages = {

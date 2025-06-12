@@ -31,7 +31,7 @@ const ReuseUpload = ({
   children = (
     <Button
       icon={<UploadOutlined />}
-      className="!text-base-color sm:text-lg !bg-secondary-color  w-full border !border-dashed !border-secondary-color rounded-md flex items-center justify-center !py-5"
+      className="!text-primary-color sm:text-lg !bg-secondary-color  w-full border !border-dashed !border-secondary-color rounded-md flex items-center justify-center !py-5"
     >
       {buttonText}
     </Button>

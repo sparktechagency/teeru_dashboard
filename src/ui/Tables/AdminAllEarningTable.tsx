@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Space, Tooltip } from "antd";
 import { GoEye } from "react-icons/go";
 import ReuseTable from "../../utils/ReuseTable";
 import { IEarning } from "../../types";
+import { useTranslation } from "react-i18next";
 interface AdminAllEarningTableProps {
   data: IEarning[];
   loading: boolean;
@@ -22,55 +24,56 @@ const AdminAllEarningTable: React.FC<AdminAllEarningTableProps> = ({
   total,
   limit,
 }) => {
+  const { t } = useTranslation();
+
   const columns = [
     {
-      title: "#UID",
-      render: (_: unknown, __: unknown, index: number) => index + 1,
+      title: t("transaction_table.uid"),
+      render: (_: any, __: any, index: number) => index + 1,
       key: "_id",
     },
     {
-      title: "Full Name",
-      dataIndex: ["user_id", "fullName"], // Data key for fullName
+      title: t("transaction_table.full_name"),
+      dataIndex: ["user_id", "fullName"],
       key: "fullName",
     },
     {
-      title: "Email",
-      dataIndex: ["user_id", "email"], // Data key for email
+      title: t("transaction_table.email"),
+      dataIndex: ["user_id", "email"],
       key: "email",
     },
     {
-      title: "Event Name",
-      dataIndex: ["ticketId", "eventId", "name"], // Data key for email
+      title: t("transaction_table.event_name"),
+      dataIndex: ["ticketId", "eventId", "name"],
+      key: "eventName",
+    },
+    {
+      title: t("transaction_table.amount"),
+      dataIndex: "amount",
       key: "amount",
     },
     {
-      title: "Amount",
-      dataIndex: "amount", // Data key for email
-      key: "amount",
-    },
-    {
-      title: "Transaction ID",
-      dataIndex: "transactionId", // Data key for email
+      title: t("transaction_table.transaction_id"),
+      dataIndex: "transactionId",
       key: "transactionId",
     },
     {
-      title: "Payment Status",
-      dataIndex: "paymentStatus", // Data key for paymentStatus
+      title: t("transaction_table.payment_status"),
+      dataIndex: "paymentStatus",
       key: "paymentStatus",
-      render: (text: string) =>
+      render: (text) =>
         text === "completed" ? (
-          <span className="text-green-500">Completed</span>
+          <span className="text-green-500">{t("completed")}</span>
         ) : (
-          "Pending"
+          t("pending")
         ),
     },
     {
-      title: "Action",
+      title: t("transaction_table.action"),
       key: "action",
-      render: (_: unknown, record: IEarning) => (
+      render: (_, record) => (
         <Space size="middle">
-          {/* View Details Tooltip */}
-          <Tooltip placement="right" title="View Details">
+          <Tooltip placement="right" title={t("view_details")}>
             <button
               className="!p-0 !bg-transparent !border-none !text-secondary-color cursor-pointer"
               onClick={() => showViewModal(record)}

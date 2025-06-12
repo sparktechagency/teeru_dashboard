@@ -1,5 +1,5 @@
 "use client";
-import { Checkbox, Form } from "antd";
+import { Form } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import Container from "../../ui/Container";
 import ReusableForm from "../../ui/Form/ReuseForm";
@@ -12,34 +12,37 @@ import { useLoginMutation } from "../../redux/features/auth/authApi";
 import { setUserInfo } from "../../redux/features/auth/authSlice";
 import Cookies from "js-cookie";
 import { toast } from "sonner";
-
-const inputStructure = [
-  {
-    name: "email",
-    type: "email",
-    inputType: "email",
-    label: "Email",
-    placeholder: "Enter your email",
-    labelClassName: "!font-medium",
-    inputClassName: "!py-2",
-    rules: [{ required: true, message: "Email is required" }],
-  },
-  {
-    name: "password",
-    type: "password",
-    inputType: "password",
-    label: "Password",
-    placeholder: "Enter your password",
-    labelClassName: "!font-medium",
-    inputClassName: "!py-2",
-    rules: [{ required: true, message: "Password is required" }],
-  },
-];
+import { useTranslation } from "react-i18next";
+import LanguageChange from "./LanguageChange";
 
 const SignIn = () => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const router = useNavigate();
   const [form] = Form.useForm();
+
+  const inputStructure = [
+    {
+      name: "email",
+      type: "email",
+      inputType: "email",
+      label: t("signIn.email"),
+      placeholder: ".......@gmail.com",
+      labelClassName: "!font-medium",
+      inputClassName: "!py-2",
+      rules: [{ required: true, message: "Email is required" }],
+    },
+    {
+      name: "password",
+      type: "password",
+      inputType: "password",
+      label: t("signIn.password"),
+      placeholder: "Enter your password",
+      labelClassName: "!font-medium",
+      inputClassName: "!py-2",
+      rules: [{ required: true, message: "Password is required" }],
+    },
+  ];
 
   const [login] = useLoginMutation();
 
@@ -70,7 +73,8 @@ const SignIn = () => {
   return (
     <div className="text-base-color">
       <Container>
-        <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 items-center justify-items-center-safe gap-5">
+        <LanguageChange />
+        <div className="min-h-[90vh] grid grid-cols-1 lg:grid-cols-2 items-center justify-items-center-safe gap-5">
           <img
             src={AllImages.logo}
             alt="logo"
@@ -81,10 +85,10 @@ const SignIn = () => {
             <div className="flex flex-col justify-center items-center">
               <div className="text-center mt-5 mb-8">
                 <h1 className="text-3xl lg:text-4xl font-semibold text-base-color mb-5">
-                  Login to Account!
+                  {t("signIn.title")}
                 </h1>
                 <p className="text-xl lg:text-2xl font-medium mb-2 text-base-color/90">
-                  Please enter your email and password to continue.
+                  {t("signIn.info")}
                 </p>
               </div>
             </div>
@@ -104,13 +108,12 @@ const SignIn = () => {
                   rules={input.rules}
                 />
               ))}
-              <div className="flex justify-between items-center text-base mt-10 mb-5">
-                <Checkbox className="!text-base-color">Remember me</Checkbox>
+              <div className="flex justify-end items-center text-base mt-10 mb-5">
                 <Link
                   to="/forgot-password"
                   className="!underline font-bold !text-secondary-color"
                 >
-                  Forgot Password?
+                  {t("signIn.forgot_password")}
                 </Link>
               </div>
               <ReuseButton
@@ -119,7 +122,7 @@ const SignIn = () => {
                 className="!py-6 !px-9 !text-base sm:!text-lg lg:!text-xl !rounded-xl"
                 // icon={allIcons.arrowRight}
               >
-                Sign In
+                {t("signIn.sign_in")}
               </ReuseButton>
             </ReusableForm>
           </div>

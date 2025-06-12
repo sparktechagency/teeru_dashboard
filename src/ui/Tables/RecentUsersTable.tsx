@@ -5,6 +5,7 @@ import { ConfigProvider } from "antd";
 import { getImageUrl } from "../../helpers/config/envConfig";
 import { formetDateAndTime } from "../../utils/dateFormet";
 import { ColumnsType } from "antd/es/table";
+import { useTranslation } from "react-i18next";
 
 interface RecentUsersTableProps {
   data: IUserType[];
@@ -23,6 +24,7 @@ const RecentUsersTable: React.FC<RecentUsersTableProps> = ({
   total,
   limit,
 }) => {
+  const { t } = useTranslation();
   const imageApiUrl = getImageUrl();
   const columns: ColumnsType<IUserType> = [
     {
@@ -32,7 +34,7 @@ const RecentUsersTable: React.FC<RecentUsersTableProps> = ({
       render: (_: unknown, __: unknown, index: number) => index + 1,
     },
     {
-      title: "Full Name",
+      title: t("user_table.full_name"), // Using translation key
       dataIndex: "fullName",
       key: "fullName",
       render: (text: string, record: IUserType) => (
@@ -47,27 +49,22 @@ const RecentUsersTable: React.FC<RecentUsersTableProps> = ({
       ),
     },
     {
-      title: "Phone",
+      title: t("user_table.phone"), // Using translation key
       dataIndex: "phone",
       key: "phone",
     },
     {
-      title: "Email",
+      title: t("user_table.email"), // Using translation key
       dataIndex: "email",
       key: "email",
     },
     {
-      title: "Gender",
+      title: t("user_table.gender"), // Using translation key
       dataIndex: "gender",
       key: "gender",
-      // filters: [
-      //   { text: "Male", value: "male" },
-      //   { text: "Female", value: "female" },
-      // ],
-      // filterMultiple: false,
     },
     {
-      title: "Joining Date",
+      title: t("user_table.joining_date"), // Using translation key
       dataIndex: "createdAt",
       key: "createdAt",
       render: (date: string) => formetDateAndTime(date),

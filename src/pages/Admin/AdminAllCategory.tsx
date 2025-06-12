@@ -10,8 +10,10 @@ import {
   useDeleteCategoryMutation,
   useGetCategoryQuery,
 } from "../../redux/features/category/categoryAPi";
+import { useTranslation } from "react-i18next";
 
 const AdminAllCategory = () => {
+  const { t } = useTranslation();
   const [deleteCategory] = useDeleteCategoryMutation();
   const [page, setPage] = useState(1);
 
@@ -67,7 +69,7 @@ const AdminAllCategory = () => {
         <div className="bg-secondary-color w-full p-5 rounded-tl-xl rounded-tr-xl">
           <div className=" flex items-center justify-between">
             <p className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl text-primary-color font-semibold">
-              Categories
+              {t("category.categories")}
             </p>
           </div>
         </div>
@@ -78,7 +80,7 @@ const AdminAllCategory = () => {
             className="my-5 !text-2xl flex items-center justify-center !py-6 font-bold"
             onClick={showAddCategoryModal}
           >
-            <GoPlusCircle className="" /> Add Category
+            <GoPlusCircle className="" /> {t("category.add_category")}
           </ReuseButton>
           <AdminAllCategoryTable
             data={allCategory}

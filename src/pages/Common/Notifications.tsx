@@ -5,8 +5,10 @@ import { FadeLoader } from "react-spinners";
 import { formetDateAndTime } from "../../utils/dateFormet";
 import { Pagination } from "antd";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const Notifications = () => {
+  const { t } = useTranslation();
   const [page, setPage] = useState(1);
   const limit = 12;
   const { data, isFetching } = useGetNotificationQuery(
@@ -37,7 +39,7 @@ const Notifications = () => {
         />
 
         <h1 className="text-3xl font-bold text-primary-color">
-          All Notifications
+          {t("extra.all_notifications")}
         </h1>
       </div>
       <div className="px-4 sm:px-6 md:px-8 ">

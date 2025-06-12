@@ -20,6 +20,8 @@ interface IEventType {
   isDeleted: boolean;
   createdAt: string;
   updatedAt: string;
+  image: string;
+  head_to_head: string;
 }
 
 export type { IEventType };

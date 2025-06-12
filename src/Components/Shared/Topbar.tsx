@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { BarsOutlined } from "@ant-design/icons";
-import { Dropdown } from "antd";
+import { ConfigProvider, Dropdown, Select } from "antd";
 import { Link } from "react-router-dom";
 import { AllIcons, AllImages } from "../../../public/images/AllImages";
 import Cookies from "js-cookie";
@@ -12,17 +12,34 @@ import { useState } from "react";
 import { FadeLoader } from "react-spinners";
 import { useGetProfileQuery } from "../../redux/features/profile/profileApi";
 import { getImageUrl } from "../../helpers/config/envConfig";
+import SpinnerLoader from "../../ui/SpinnerLoader";
+import { useTranslation } from "react-i18next";
+
+const { Option } = Select;
 
 interface TopbarProps {
   collapsed: boolean;
   setCollapsed: (collapsed: boolean) => void;
 }
 
+const languages = [
+  { id: "en", name: "English", flag: AllImages.english },
+  { id: "fr", name: "French", flag: AllImages.france },
+];
+
 const Topbar: React.FC<TopbarProps> = ({ collapsed, setCollapsed }) => {
+  const selectedLanguage = Cookies.get("teeru_lang");
   const imageAPiUrl = getImageUrl();
   const token = Cookies.get("teeru_accessToken");
   const user = decodedToken(token || "") as IJwtPayload;
   const [open, setOpen] = useState(false);
+  const { t, i18n } = useTranslation();
+
+  const setLanguage = (lang: string) => {
+    console.log(lang);
+    i18n.changeLanguage(lang);
+    Cookies.set("teeru_lang", lang, { path: "/", expires: 365, secure: false });
+  };
 
   const { data, isFetching } = useGetNotificationQuery(
     { page: 1, limit: 5 },
@@ -36,6 +53,10 @@ const Topbar: React.FC<TopbarProps> = ({ collapsed, setCollapsed }) => {
   const { data: profile, isFetching: profileFetching } = useGetProfileQuery({});
 
   const profileData = profile?.data;
+
+  if (!selectedLanguage) {
+    Cookies.set("teeru_lang", "fr", { path: "/", expires: 365, secure: false });
+  }
 
   const notificationMenu = (
     <div
@@ -67,7 +88,7 @@ const Topbar: React.FC<TopbarProps> = ({ collapsed, setCollapsed }) => {
         to={`/${user?.role}/notifications`}
         className="w-2/3 mx-auto !bg-secondary-color !text-primary-color rounded-xl h-8 py-1"
       >
-        See More
+        {t("topbar.see_more")}
       </Link>
     </div>
   );
@@ -81,6 +102,50 @@ const Topbar: React.FC<TopbarProps> = ({ collapsed, setCollapsed }) => {
         />
       </div>
       <div className="flex items-center justify-center gap-5">
+        <ConfigProvider
+          theme={{
+            components: {
+              Select: {
+                colorTextQuaternary: "#507d18",
+                colorBgContainer: "rgba(0,0,0,0)",
+                fontSize: 18,
+                optionSelectedColor: "#ffffff",
+                optionSelectedBg: "#507d18",
+                optionActiveBg: "#507d1855",
+                colorBorder: "#507d1800",
+                colorBgElevated: "#ffffff",
+                selectorBg: "#ffffff",
+                colorText: "#111111",
+                colorTextPlaceholder: "#111111",
+                activeOutlineColor: "#D3EBE700",
+                activeBorderColor: "#D3EBE700",
+                hoverBorderColor: "#D3EBE700",
+                colorIcon: "#507d18",
+              },
+            },
+          }}
+        >
+          <Select
+            className="!ring-0 !border-0 !outline-none !shadow-none"
+            onChange={(value) => {
+              setLanguage(value);
+            }}
+            defaultValue={selectedLanguage}
+          >
+            {languages.map(({ id, name, flag }) => (
+              <Option
+                className="!m-0 !mb-1 flex !justify-center !text-center !items-center "
+                key={id}
+                value={id}
+              >
+                <div className="flex items-center gap-2 !text-sm !font-semibold">
+                  <img src={flag} alt={name} className="w-auto h-4" />
+                  <span>{name}</span>
+                </div>
+              </Option>
+            ))}
+          </Select>
+        </ConfigProvider>
         <Dropdown
           overlay={notificationMenu}
           trigger={["hover"]}
@@ -95,9 +160,7 @@ const Topbar: React.FC<TopbarProps> = ({ collapsed, setCollapsed }) => {
           </div>
         </Dropdown>
         {profileFetching ? (
-          <div className="flex items-center">
-            <FadeLoader color="#507D18" />
-          </div>
+          <SpinnerLoader />
         ) : (
           <Link to="profile">
             <div className="flex items-center justify-center gap-0 bg-white text-base-color rounded-lg  px-2 py-1 ">

@@ -4,6 +4,7 @@ import { MdDelete } from "react-icons/md";
 import { ICategoryType } from "../../types";
 import { ColumnsType } from "antd/es/table";
 import { getImageUrl } from "../../helpers/config/envConfig";
+import { useTranslation } from "react-i18next";
 
 interface AdminAllCategoryTableProps {
   data: ICategoryType[];
@@ -25,21 +26,22 @@ const AdminAllCategoryTable: React.FC<AdminAllCategoryTableProps> = ({
   total,
   limit,
 }) => {
+  const { t } = useTranslation();
   const imageApiUrl = getImageUrl();
   const columns: ColumnsType<ICategoryType> = [
     {
-      title: "#UID",
+      title: "#SI",
       dataIndex: "_id",
       render: (_: unknown, __: unknown, index: number) => index + 1,
       key: "_id",
     },
     {
-      title: "Category Name",
+      title: t("category_table.category_name"),
       dataIndex: "name", // Data key for name
       key: "name",
     },
     {
-      title: "Category Image",
+      title: t("category_table.category_image"),
       dataIndex: "image", // Data key for image
       key: "image",
       render: (image: string) => (
@@ -51,11 +53,11 @@ const AdminAllCategoryTable: React.FC<AdminAllCategoryTableProps> = ({
       ),
     },
     {
-      title: "Action",
+      title: t("category_table.action"),
       key: "action",
       render: (_: unknown, record: ICategoryType) => (
         <Space size="middle">
-          <Tooltip placement="left" title="Block this User">
+          <Tooltip placement="left" title="Delete Category">
             <button
               className="!p-0 !bg-transparent !border-none !text-error-color cursor-pointer"
               onClick={() => showDeleteModal(record)}

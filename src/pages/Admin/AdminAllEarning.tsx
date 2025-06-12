@@ -3,8 +3,10 @@ import { useGetAllEarningQuery } from "../../redux/features/earning/earningApi";
 import { IEarning } from "../../types";
 import AdminAllEarningTable from "../../ui/Tables/AdminAllEarningTable";
 import AdminViewEarningModal from "../../ui/Modal/Earning/AdminViewEarningModasl";
+import { useTranslation } from "react-i18next";
 
 const AdminAllEarning = () => {
+  const { t } = useTranslation();
   const [page, setPage] = useState(1);
 
   const limit = 12;
@@ -40,7 +42,7 @@ const AdminAllEarning = () => {
         <div className="bg-secondary-color w-full p-5 rounded-tl-xl rounded-tr-xl">
           <div className=" flex items-center justify-between">
             <p className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl text-primary-color font-semibold">
-              Earnings
+              {t("sidebar.earning")}
             </p>
           </div>
         </div>

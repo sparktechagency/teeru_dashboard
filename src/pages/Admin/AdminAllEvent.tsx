@@ -11,8 +11,10 @@ import {
   useDeleteEventMutation,
   useGetEventQuery,
 } from "../../redux/features/event/eventApi";
+import { useTranslation } from "react-i18next";
 
 const AdminAllEvent = () => {
+  const { t } = useTranslation();
   const [deleteEvent] = useDeleteEventMutation();
   const [page, setPage] = useState(1);
 
@@ -73,7 +75,7 @@ const AdminAllEvent = () => {
         <div className="bg-secondary-color w-full p-5 rounded-tl-xl rounded-tr-xl">
           <div className=" flex items-center justify-between">
             <p className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl text-primary-color font-semibold">
-              Events
+              {t("event.events")}
             </p>
           </div>
         </div>
@@ -84,7 +86,7 @@ const AdminAllEvent = () => {
             className="my-5 !text-2xl flex items-center justify-center !py-6 font-bold"
             onClick={showAddEventModal}
           >
-            <GoPlusCircle className="" /> Create Event
+            <GoPlusCircle className="" /> {t("event.add_event")}
           </ReuseButton>
           <AdminAllEventTable
             data={allEvent}
