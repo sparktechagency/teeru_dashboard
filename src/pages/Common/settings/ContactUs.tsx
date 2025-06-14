@@ -9,8 +9,10 @@ import {
   useUpdateSettingMutation,
 } from "../../../redux/features/setting/settingApi";
 import Loading from "../../../ui/Loading";
+import { useTranslation } from "react-i18next";
 
 const ContactUs = () => {
+  const { t } = useTranslation();
   const [addStaticContent] = useUpdateSettingMutation();
   const editor = useRef(null);
   const [content, setContent] = useState("");
@@ -53,7 +55,9 @@ const ContactUs = () => {
       style={{ boxShadow: "0px 0px 5px  rgba(0, 0, 0, 0.25)" }}
     >
       <div className="bg-secondary-color w-full flex items-center p-5 mb-10  rounded-tl-xl rounded-tr-xl">
-        <p className="text-2xl text-primary-color font-semibold">Contact us</p>
+        <p className="text-2xl text-primary-color font-semibold">
+          {t("sidebar.contact-us")}
+        </p>
       </div>
       <div className=" flex justify-center items-center">
         <div className="w-[95%]">
@@ -71,7 +75,7 @@ const ContactUs = () => {
             variant="secondary"
             className="w-full mt-4"
           >
-            Save
+            {t("extra.save")}
           </ReuseButton>
         </div>
       </div>

@@ -9,41 +9,59 @@ import { IJwtPayload } from "../../types";
 import { useGetProfileQuery } from "../../redux/features/profile/profileApi";
 import Loading from "../../ui/Loading";
 import { getImageUrl } from "../../helpers/config/envConfig";
-
-const inputStructure = [
-  {
-    name: "email",
-    type: "email",
-    inputType: "email",
-    label: "Email",
-    placeholder: "Enter your email",
-    labelClassName: "!font-medium",
-    inputClassName: "!py-2 !w-full",
-    rules: [{ required: true, message: "Email is required" }],
-  },
-  {
-    name: "fullName",
-    type: "text",
-    inputType: "text",
-    label: "Name",
-    placeholder: "Enter your Name",
-    labelClassName: "!font-medium",
-    inputClassName: "!py-2 !w-full",
-    rules: [{ required: true, message: "Name is required" }],
-  },
-  {
-    name: "phone",
-    type: "text",
-    inputType: "tel",
-    label: "Phone number",
-    placeholder: "Enter your Phone number",
-    labelClassName: "!font-medium",
-    inputClassName: "!py-2 !w-full",
-    rules: [{ required: true, message: "Phone number is required" }],
-  },
-];
+import { useTranslation } from "react-i18next";
 
 const Profile = () => {
+  const { t } = useTranslation(); // Assuming you're using react-i18next for translation
+
+  const inputStructure = [
+    {
+      name: "email",
+      type: "email",
+      inputType: "email",
+      label: t("profile.email"),
+      placeholder: t("profile.email_placeholder"),
+      labelClassName: "!font-medium",
+      inputClassName: "!py-2 !w-full",
+      rules: [
+        {
+          required: true,
+          message: t("profile.email") + " " + t("required_field"),
+        },
+      ],
+    },
+    {
+      name: "fullName",
+      type: "text",
+      inputType: "text",
+      label: t("profile.name"),
+      placeholder: t("profile.name_placeholder"),
+      labelClassName: "!font-medium",
+      inputClassName: "!py-2 !w-full",
+      rules: [
+        {
+          required: true,
+          message: t("profile.name") + " " + t("required_field"),
+        },
+      ],
+    },
+    {
+      name: "phone",
+      type: "text",
+      inputType: "tel",
+      label: t("profile.phone"),
+      placeholder: t("profile.phone_placeholder"),
+      labelClassName: "!font-medium",
+      inputClassName: "!py-2 !w-full",
+      rules: [
+        {
+          required: true,
+          message: t("profile.phone") + " " + t("required_field"),
+        },
+      ],
+    },
+  ];
+
   const imageApiUrl = getImageUrl();
   const token = Cookies.get("teeru_accessToken");
   const user = decodedToken(token || "") as IJwtPayload;
@@ -71,7 +89,7 @@ const Profile = () => {
     >
       <div className="bg-secondary-color w-full flex items-center p-5 mb-10  rounded-tl-xl rounded-tr-xl">
         <p className="text-3xl text-primary-color font-semibold w-[95%] mx-auto">
-          Profile
+          {t("sidebar.profile")}
         </p>
       </div>
       <div className=" flex justify-center items-center">
@@ -97,7 +115,9 @@ const Profile = () => {
                     className="text-lg"
                     style={{ color: "#FAFAFA" }}
                   />
-                  <p className="text-primary-color text-lg">Edit Profile</p>
+                  <p className="text-primary-color text-lg">
+                    {t("profile.edit_profile")}
+                  </p>
                 </div>
               </ReuseButton>
             </div>

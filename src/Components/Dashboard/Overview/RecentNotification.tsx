@@ -8,7 +8,10 @@ import { useGetNotificationQuery } from "../../../redux/features/dashboard/dashb
 import { formetDateAndTime } from "../../../utils/dateFormet";
 import { FadeLoader } from "react-spinners";
 
+import { useTranslation } from "react-i18next";
+
 const RecentNotification = () => {
+  const { t } = useTranslation();
   const token = Cookies.get("teeru_accessToken");
   const user = decodedToken(token || "") as IJwtPayload;
 
@@ -27,9 +30,13 @@ const RecentNotification = () => {
       style={{ boxShadow: "0px 0px 5px 1px #00000040" }}
     >
       <div className="flex justify-between items-center sticky top-0 p-5 bg-white z-10">
-        <h1 className="text-xl font-semibold">Recent Activity</h1>
+        <h1 className="text-xl font-semibold">
+          {t("dashboard.recent_activity")}
+        </h1>
         <Link to={`/${user?.role}/notifications`}>
-          <p className="cursor-pointer text-[#898c8d] underline ">View all</p>
+          <p className="cursor-pointer text-[#898c8d] underline ">
+            {t("dashboard.view_all")}
+          </p>
         </Link>
       </div>
       {isFetching ? (

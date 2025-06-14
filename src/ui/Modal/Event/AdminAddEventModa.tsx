@@ -12,6 +12,8 @@ import { ICategoryType } from "../../../types";
 import tryCatchWrapper from "../../../utils/tryCatchWrapper";
 import { useAddEventMutation } from "../../../redux/features/event/eventApi";
 import { FadeLoader } from "react-spinners";
+import { useTranslation } from "react-i18next";
+import ReuseUpload from "../../Form/ReuseUpload";
 
 interface AdminAddEventModalProps {
   isAddModalVisible: boolean;
@@ -22,6 +24,7 @@ const AdminAddEventModal: React.FC<AdminAddEventModalProps> = ({
   isAddModalVisible,
   handleCancel,
 }) => {
+  const { t } = useTranslation();
   const [form] = Form.useForm();
   const [addEvent] = useAddEventMutation();
   const [date, setDate] = React.useState<string | null>(null); // Ensuring date is always string | null
@@ -40,7 +43,6 @@ const AdminAddEventModal: React.FC<AdminAddEventModalProps> = ({
   const allCategory: ICategoryType[] = data?.data?.result;
 
   const handleDateChange = (_date: any, dateString: string | string[]) => {
-    // If an array of dates is passed, take the first date
     if (Array.isArray(dateString)) {
       setDate(dateString[0] || null); // Set only the first date or null
     } else {
@@ -49,6 +51,7 @@ const AdminAddEventModal: React.FC<AdminAddEventModalProps> = ({
   };
 
   const handleSubmit = async (values: any) => {
+    const formData = new FormData();
     const dateISO = values.date
       ? values.date.format("YYYY-MM-DDTHH:mm:ss") // local time ISO string without 'Z'
       : new Date().toISOString();
@@ -69,13 +72,20 @@ const AdminAddEventModal: React.FC<AdminAddEventModalProps> = ({
       date: dateISO,
       time: timeStr,
       location: values.location,
+      head_to_head: values.head_to_head,
       ticketPrices,
     };
 
+    if (values.image) {
+      formData.append("image", values?.image[0]?.originFileObj);
+    }
+
+    formData.append("data", JSON.stringify(payload));
+
     const res = await tryCatchWrapper(
       addEvent,
-      { body: payload },
-      "Deleting Event..."
+      { body: formData },
+      "Adding Event..."
     );
     if (res.statusCode === 201) {
       form.resetFields();
@@ -100,114 +110,124 @@ const AdminAddEventModal: React.FC<AdminAddEventModalProps> = ({
           <ReusableForm form={form} handleFinish={handleSubmit}>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
               <ReuseInput
-                label="Event Name"
+                label={t("event_form.event_name")}
                 inputType="normal"
                 name="name"
                 type="text"
-                placeholder="Event Name"
-                rules={[{ required: true, message: "Please enter Event Name" }]}
+                placeholder={t("event_form.event_name_placeholder")}
+                rules={[
+                  { required: true, message: t("event_form.event_name") },
+                ]}
               />
               <ReuseSelect
-                label="Category"
+                label={t("event_form.category")}
                 name="category"
                 options={allCategory?.map((category) => ({
                   value: category?._id,
                   label: category?.name,
                 }))}
-                rules={[
-                  { required: true, message: "Please select a category" },
-                ]}
-                placeholder="Select Category"
+                rules={[{ required: true, message: t("event_form.category") }]}
+                placeholder={t("event_form.category_placeholder")}
               />
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
               <ReuseDatePicker
                 name="date"
-                label="Date"
-                onChange={handleDateChange} // Handle date change
-                placeholder="Select date"
+                label={t("event_form.date")}
+                onChange={handleDateChange}
+                placeholder={t("event_form.date_placeholder")}
                 rules={[{ required: true }]}
               />
               <ReuseTimePicker
-                label="Select Time"
+                label={t("event_form.select_time")}
                 name="time"
-                date={date} // Pass the selected date to control time selection
-                placeholder="Select time"
+                date={date}
+                placeholder={t("event_form.select_time_placeholder")}
                 rules={[{ required: true }]}
-                disabled={!date} // Disable TimePicker if no date is selected
+                disabled={!date}
               />
             </div>
             <ReuseInput
-              label="Location"
+              label={t("event_form.location")}
               inputType="normal"
               name="location"
               type="text"
-              placeholder="Location"
-              rules={[{ required: true, message: "Please enter Location" }]}
+              placeholder={t("event_form.location_placeholder")}
+              rules={[{ required: true, message: t("event_form.location") }]}
             />
+            <ReuseUpload name="image" label={t("event_form.event_image")} />
+            <div className="mt-5">
+              <ReuseInput
+                label={t("event_form.head_to_head")}
+                inputType="normal"
+                name="head_to_head"
+                type="text"
+                placeholder={t("event_form.head_to_head_placeholder")}
+                rules={[{ required: true, message: t("event_form.location") }]}
+              />
+            </div>{" "}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
               <ReuseInput
-                label="Tribune"
+                label={t("event_form.tribune")}
                 inputType="normal"
                 name="tribune"
                 type="number"
-                placeholder="Tribune"
-                rules={[{ required: true, message: "Please enter Tribune" }]}
+                placeholder={t("event_form.tribune_placeholder")}
+                rules={[{ required: true, message: t("event_form.tribune") }]}
               />
               <ReuseInput
-                label="Annexe Loge"
+                label={t("event_form.annexe_loge")}
                 inputType="normal"
                 name="annexeLoge"
                 type="number"
-                placeholder="Annexe Loge"
+                placeholder={t("event_form.annexe_loge_placeholder")}
                 rules={[
-                  { required: true, message: "Please enter Annexe Loge" },
+                  { required: true, message: t("event_form.annexe_loge") },
                 ]}
               />
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
               <ReuseInput
-                label="Loge VIP"
+                label={t("event_form.loge_vip")}
                 inputType="normal"
                 name="logeVIP"
                 type="number"
-                placeholder="Loge VIP"
-                rules={[{ required: true, message: "Please enter Loge VIP" }]}
+                placeholder={t("event_form.loge_vip_placeholder")}
+                rules={[{ required: true, message: t("event_form.loge_vip") }]}
               />
               <ReuseInput
-                label="Loge VVIP"
+                label={t("event_form.loge_vvip")}
                 inputType="normal"
                 name="logeVVIP"
                 type="number"
-                placeholder="Loge VVIP"
-                rules={[{ required: true, message: "Please enter Loge VVIP" }]}
+                placeholder={t("event_form.loge_vvip_placeholder")}
+                rules={[{ required: true, message: t("event_form.loge_vvip") }]}
               />
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
               <ReuseInput
-                label="Service Fee"
+                label={t("event_form.service_fee")}
                 inputType="normal"
                 name="serviceFee"
                 type="number"
-                placeholder="Service Fee"
+                placeholder={t("event_form.service_fee_placeholder")}
                 rules={[
-                  { required: true, message: "Please enter Service Fee" },
+                  { required: true, message: t("event_form.service_fee") },
                 ]}
               />
               <ReuseInput
-                label="Processing Fee"
+                label={t("event_form.processing_fee")}
                 inputType="normal"
                 name="processingFee"
                 type="number"
-                placeholder="Processing Fee"
+                placeholder={t("event_form.processing_fee_placeholder")}
                 rules={[
-                  { required: true, message: "Please enter Processing Fee" },
+                  { required: true, message: t("event_form.processing_fee") },
                 ]}
               />
             </div>
-
             <ReuseButton variant="secondary" htmlType="submit" className="mt-8">
-              Add{" "}
+              {t("event_form.create")}
             </ReuseButton>
           </ReusableForm>
         )}

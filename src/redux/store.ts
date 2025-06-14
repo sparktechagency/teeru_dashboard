@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import authReducer from "./features/auth/authSlice"; // Import your auth slice
+import dashboardReducer from "./features/dashboard/dashboardSlice"; // Import your auth slice
 import { baseApi } from "./api/baseApi";
 import { persistStore, persistReducer } from "redux-persist";
 import createWebStorage from "redux-persist/lib/storage/createWebStorage";
@@ -38,7 +39,7 @@ const storage =
 const persistConfig = {
   key: "teeru",
   storage,
-  whitelist: ["auth"], // Persist only the `auth` slice (for accessToken)
+  whitelist: ["auth", "dashboard"], // Persist only the `auth` slice (for accessToken)
   blacklist: ["baseApi"], // Do not persist the `baseApi` slice
 };
 
@@ -46,6 +47,7 @@ const persistConfig = {
 const rootReducer = {
   [baseApi.reducerPath]: baseApi.reducer,
   auth: authReducer, // Persisted auth reducer
+  dashboard: dashboardReducer,
 };
 
 // Create persisted reducer for the auth slice

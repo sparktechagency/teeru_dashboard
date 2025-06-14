@@ -20,7 +20,7 @@ export const adminPaths = [
     path: "overview",
     element: <AdminDashboard />,
     key: "overview",
-    name: "Dashboard",
+    name: "Overview",
     icon: dashboardLogo,
   },
   {

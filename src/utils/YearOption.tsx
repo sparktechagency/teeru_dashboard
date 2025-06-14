@@ -20,7 +20,7 @@ const YearOption: React.FC<YearOptionProps> = ({
   const [yearOptions, setYearOptions] = useState<YearOption[]>([]); // Type state as an array of YearOption objects
 
   useEffect(() => {
-    const startYear = 2020;
+    const startYear = 2025;
     const yearRange: YearOption[] = [];
 
     // Add the years to the list

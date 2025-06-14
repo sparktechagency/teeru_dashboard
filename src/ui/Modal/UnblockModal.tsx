@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Modal } from "antd";
 import ReuseButton from "../Button/ReuseButton";
+import { useTranslation } from "react-i18next";
 
 interface UnblockModalProps<T> {
   isUnblockModalVisible: boolean;
@@ -15,8 +16,8 @@ const UnblockModal: React.FC<UnblockModalProps<any>> = ({
   handleCancel,
   currentRecord,
   handleUnblock,
-  description = " Are You Sure You want to Unblock ?",
 }) => {
+  const { t } = useTranslation();
   //   const [blockUser] = useBlockUserMutation();
 
   return (
@@ -44,20 +45,20 @@ const UnblockModal: React.FC<UnblockModalProps<any>> = ({
             className="!px-6 !py-5 mr-4 w-fit flex items-center justify-center gap-2"
             onClick={handleCancel}
           >
-            Cancel
+            {t("extra.cancel")}
           </ReuseButton>
           <ReuseButton
             variant="secondary"
             className="!px-6 !py-5 w-fit flex items-center justify-center gap-2"
             onClick={() => handleUnblock(currentRecord)}
           >
-            Unblock
+            {t("extra.unblock")}
           </ReuseButton>
         </div>
       }
     >
       <p className="text-3xl font-semibold pt-10 pb-4 text-base-color">
-        {description}
+        {t("extra.unblock_modal_title")}
       </p>
     </Modal>
   );

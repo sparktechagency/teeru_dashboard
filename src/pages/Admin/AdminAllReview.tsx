@@ -8,8 +8,10 @@ import {
 } from "../../redux/features/review/reviewApi";
 import { IReview } from "../../types";
 import tryCatchWrapper from "../../utils/tryCatchWrapper";
+import { useTranslation } from "react-i18next";
 
 const AdminAllReview = () => {
+  const { t } = useTranslation();
   const [deleteReview] = useDeleteReviewMutation();
   const [page, setPage] = useState(1);
 
@@ -63,7 +65,7 @@ const AdminAllReview = () => {
         <div className="bg-secondary-color w-full p-5 rounded-tl-xl rounded-tr-xl">
           <div className=" flex items-center justify-between">
             <p className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl text-primary-color font-semibold">
-              Reviews
+              {t("sidebar.review")}
             </p>
           </div>
         </div>

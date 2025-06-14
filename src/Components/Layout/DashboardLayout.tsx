@@ -21,8 +21,10 @@ import { IJwtPayload } from "../../types";
 import Cookies from "js-cookie";
 import { useAppDispatch } from "../../redux/hooks";
 import { clearAuth } from "../../redux/features/auth/authSlice";
+import { useTranslation } from "react-i18next";
 
 const DashboardLayout = () => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const token = Cookies.get("teeru_accessToken");
   const userRole = decodedToken(token || "") as IJwtPayload;
@@ -55,13 +57,13 @@ const DashboardLayout = () => {
   const menuItems =
     userRole?.role === "admin"
       ? //   ? sidebarItemsGenerator(adminPaths, "admin")
-        sidebarItemsGenerator(adminPaths, userRole?.role)
+        sidebarItemsGenerator(adminPaths, userRole?.role, t)
       : [];
 
   const otherItems =
     userRole?.role === "admin"
       ? //   ? sidebarItemsGenerator(adminPaths, "admin")
-        sidebarItemsGenerator(adminCommonPaths, userRole?.role)
+        sidebarItemsGenerator(adminCommonPaths, userRole?.role, t)
       : [];
 
   const handleLogout = () => {
@@ -84,7 +86,7 @@ const DashboardLayout = () => {
     ),
     label: (
       <div onClick={handleLogout}>
-        <NavLink to="/sign-in">Logout</NavLink>
+        <NavLink to="/sign-in">{t("sidebar.logout")}</NavLink>
       </div>
     ),
   });

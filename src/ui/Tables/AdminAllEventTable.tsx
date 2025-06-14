@@ -7,6 +7,7 @@ import { IEventType } from "../../types";
 import { formatDate } from "../../utils/dateFormet";
 import { getImageUrl } from "../../helpers/config/envConfig";
 import dayjs from "dayjs";
+import { useTranslation } from "react-i18next";
 
 interface AdminAllEventTableProps {
   data: IEventType[];
@@ -30,6 +31,7 @@ const AdminAllEventTable: React.FC<AdminAllEventTableProps> = ({
   total,
   limit,
 }) => {
+  const { t } = useTranslation();
   const imageApiUrl = getImageUrl();
   const columns: ColumnsType<IEventType> = [
     {
@@ -39,14 +41,26 @@ const AdminAllEventTable: React.FC<AdminAllEventTableProps> = ({
       key: "_id",
     },
     {
-      title: "Event Name",
+      title: t("event_table.event_name"),
       dataIndex: "name",
       key: "name",
+      render: (text: string, record: IEventType) => (
+        <div className="flex items-center gap-2">
+          {record?.image && (
+            <img
+              src={imageApiUrl + record.image}
+              alt={text}
+              className="w-10 h-10 object-cover rounded"
+            />
+          )}
+          <p>{text}</p>
+        </div>
+      ),
       width: 300,
       fixed: "left",
     },
     {
-      title: "Category",
+      title: t("event_table.category"),
       dataIndex: ["category", "name"],
       key: "category",
       align: "center",
@@ -67,7 +81,7 @@ const AdminAllEventTable: React.FC<AdminAllEventTableProps> = ({
         ),
     },
     {
-      title: "Date & Time",
+      title: t("event_table.date_time"),
       dataIndex: "date",
       key: "date",
       render: (text: string, record: IEventType) => {
@@ -82,12 +96,17 @@ const AdminAllEventTable: React.FC<AdminAllEventTableProps> = ({
       },
     },
     {
-      title: "Location",
+      title: t("event_table.location"),
       dataIndex: "location",
       key: "location",
     },
     {
-      title: "Ticket Prices",
+      title: t("event_table.head_to_head"),
+      dataIndex: "head_to_head",
+      key: "head_to_head",
+    },
+    {
+      title: t("event_table.ticket_prices"),
       dataIndex: "ticketPrices",
       key: "ticketPrices",
       render: (ticketPrices: any) => {
@@ -102,19 +121,19 @@ const AdminAllEventTable: React.FC<AdminAllEventTableProps> = ({
       },
     },
     {
-      title: "Service Fee",
+      title: t("event_table.service_fee"),
       dataIndex: ["ticketPrices", "serviceFee"],
       key: "serviceFee",
       align: "center",
     },
     {
-      title: "Processing Fee",
+      title: t("event_table.processing_fee"),
       dataIndex: ["ticketPrices", "processingFee"],
       key: "processingFee",
       align: "center",
     },
     {
-      title: "Action",
+      title: t("event_table.action"),
       key: "action",
       render: (_: unknown, record: IEventType) => (
         <Space size="middle">

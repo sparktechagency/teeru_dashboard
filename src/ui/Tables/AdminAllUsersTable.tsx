@@ -8,6 +8,7 @@ import { getImageUrl } from "../../helpers/config/envConfig";
 import { CgUnblock } from "react-icons/cg";
 import { IUserType } from "../../types";
 import { ColumnsType } from "antd/es/table";
+import { useTranslation } from "react-i18next";
 
 interface AdminAllUsersTableProps {
   data: IUserType[];
@@ -32,17 +33,17 @@ const AdminAllUsersTable: React.FC<AdminAllUsersTableProps> = ({
   total,
   limit,
 }) => {
+  const { t } = useTranslation();
   const imageApiUrl = getImageUrl();
   const columns: ColumnsType<IUserType> = [
     {
       title: "#SI",
       dataIndex: "_id",
       key: "_id",
-      render: (_: unknown, __: unknown, index: number) =>
-        page * limit - limit + index + 1,
+      render: (_: unknown, __: unknown, index: number) => index + 1,
     },
     {
-      title: "Full Name",
+      title: t("user_table.full_name"), // Using translation key
       dataIndex: "fullName",
       key: "fullName",
       render: (text: string, record: IUserType) => (
@@ -57,33 +58,42 @@ const AdminAllUsersTable: React.FC<AdminAllUsersTableProps> = ({
       ),
     },
     {
-      title: "Phone",
+      title: t("user_table.phone"), // Using translation key
       dataIndex: "phone",
       key: "phone",
     },
     {
-      title: "Email",
+      title: t("user_table.email"), // Using translation key
       dataIndex: "email",
       key: "email",
     },
     {
-      title: "Gender",
+      title: t("user_table.gender"), // Using translation key
       dataIndex: "gender",
       key: "gender",
-      // filters: [
-      //   { text: "Male", value: "male" },
-      //   { text: "Female", value: "female" },
-      // ],
-      // filterMultiple: false,
     },
     {
-      title: "Joining Date",
+      title: t("user_table.role"), // Using translation key
+      dataIndex: "role",
+      key: "role",
+      render: (role: string) => {
+        return role === "admin" ? (
+          <span className="text-secondary-color font-semibold">Admin</span>
+        ) : (
+          <span className="text-base-color font-semibold">User</span>
+        );
+      },
+      width: 150,
+      align: "center",
+    },
+    {
+      title: t("user_table.joining_date"), // Using translation key
       dataIndex: "createdAt",
       key: "createdAt",
       render: (date: string) => formetDateAndTime(date),
     },
     {
-      title: "Action",
+      title: t("user_table.action"), // Using translation key
       key: "action",
       render: (_: unknown, record: IUserType) => (
         <>

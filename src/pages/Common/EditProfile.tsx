@@ -12,44 +12,60 @@ import {
 import Loading from "../../ui/Loading";
 import { getImageUrl } from "../../helpers/config/envConfig";
 import tryCatchWrapper from "../../utils/tryCatchWrapper";
-
-const inputStructure = [
-  {
-    name: "email",
-    type: "email",
-    inputType: "email",
-    label: "Email",
-    placeholder: "Enter your email",
-    labelClassName: "!font-medium",
-    inputClassName: "!py-2 !w-full",
-    rules: [{ required: true, message: "Email is required" }],
-    disable: true,
-  },
-  {
-    name: "fullName",
-    type: "text",
-    inputType: "text",
-    label: "Name",
-    placeholder: "Enter your Name",
-    labelClassName: "!font-medium",
-    inputClassName: "!py-2 !w-full",
-    rules: [{ required: true, message: "Name is required" }],
-    disable: false,
-  },
-  {
-    name: "phone",
-    type: "text",
-    inputType: "tel",
-    label: "Phone number",
-    placeholder: "Enter your Phone number",
-    labelClassName: "!font-medium",
-    inputClassName: "!py-2 !w-full",
-    rules: [{ required: true, message: "Phone number is required" }],
-    disable: false,
-  },
-];
+import { useTranslation } from "react-i18next";
 
 const EditProfile = () => {
+  const { t } = useTranslation(); // Assuming you're using react-i18next for translation
+
+  const inputStructure = [
+    {
+      name: "email",
+      type: "email",
+      inputType: "email",
+      label: t("profile.email"),
+      placeholder: t("profile.email_placeholder"),
+      labelClassName: "!font-medium",
+      inputClassName: "!py-2 !w-full",
+      rules: [
+        {
+          required: true,
+          message: t("profile.email") + " " + t("required_field"),
+        },
+      ],
+      disable: true, // This field will be disabled
+    },
+    {
+      name: "fullName",
+      type: "text",
+      inputType: "text",
+      label: t("profile.name"),
+      placeholder: t("profile.name_placeholder"),
+      inputClassName: "!py-2 !w-full",
+      rules: [
+        {
+          required: true,
+          message: t("profile.name") + " " + t("required_field"),
+        },
+      ],
+      disable: false, // This field will be enabled
+    },
+    {
+      name: "phone",
+      type: "text",
+      inputType: "tel",
+      label: t("profile.phone"),
+      placeholder: t("profile.phone_placeholder"),
+      labelClassName: "!font-medium",
+      inputClassName: "!py-2 !w-full",
+      rules: [
+        {
+          required: true,
+          message: t("profile.phone") + " " + t("required_field"),
+        },
+      ],
+      disable: false, // This field will be enabled
+    },
+  ];
   const [form] = Form.useForm();
   const imageApiUrl = getImageUrl();
   const { data, isFetching } = useGetProfileQuery({});
@@ -115,7 +131,7 @@ const EditProfile = () => {
             onClick={() => window.history.back()}
           />
           <p className="text-3xl text-primary-color font-semibold">
-            Edit Profile
+            {t("profile.edit_profile")}
           </p>
         </div>
       </div>
@@ -192,7 +208,7 @@ const EditProfile = () => {
             variant="secondary"
             className="w-full mt-4"
           >
-            Submit
+            {t("profile.submit")}
           </ReuseButton>
 
           <div className=" text-white mt-5"></div>

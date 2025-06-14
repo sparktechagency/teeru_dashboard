@@ -4,6 +4,7 @@ import ReuseTable from "../../utils/ReuseTable";
 import { MdDelete } from "react-icons/md";
 import { formetDateAndTime } from "../../utils/dateFormet";
 import { IReview } from "../../types";
+import { useTranslation } from "react-i18next";
 
 interface AdminAllReviewTableProps {
   data: IReview[];
@@ -27,31 +28,32 @@ const AdminAllReviewTable: React.FC<AdminAllReviewTableProps> = ({
   total,
   limit,
 }) => {
+  const { t } = useTranslation();
   const columns = [
     {
-      title: "#UID",
+      title: t("review_table.uid"), // Using the translated title
       render: (_: unknown, __: unknown, index: number) => index + 1,
       key: "_id",
     },
     {
-      title: "Full Name",
-      dataIndex: ["userId", "fullName"], // Data key for fullName
+      title: t("review_table.full_name"), // Using the translated title
+      dataIndex: ["userId", "fullName"],
       key: "fullName",
     },
     {
-      title: "Email",
-      dataIndex: ["userId", "email"], // Data key for email
+      title: t("review_table.email"), // Using the translated title
+      dataIndex: ["userId", "email"],
       key: "email",
     },
     {
-      title: "Date",
-      dataIndex: "createdAt", // Data key for createdAt
+      title: t("review_table.date"), // Using the translated title
+      dataIndex: "createdAt",
       key: "createdAt",
       render: (text: string) => formetDateAndTime(text),
     },
     {
-      title: "Rating",
-      dataIndex: "rating", // Data key for rating
+      title: t("review_table.rating"), // Using the translated title
+      dataIndex: "rating",
       key: "rating",
       render: (rating: number) => (
         <div>
@@ -61,8 +63,8 @@ const AdminAllReviewTable: React.FC<AdminAllReviewTableProps> = ({
       ),
     },
     {
-      title: "Review",
-      dataIndex: "comment", // Data key for comment
+      title: t("review_table.review"), // Using the translated title
+      dataIndex: "comment",
       key: "comment",
       render: (text: string) => (
         <div className="max-w-[200px] truncate">
@@ -71,7 +73,7 @@ const AdminAllReviewTable: React.FC<AdminAllReviewTableProps> = ({
       ),
     },
     {
-      title: "Action",
+      title: t("review_table.action"), // Using the translated title
       key: "action",
       render: (_: unknown, record: IReview) => (
         <Space size="middle">
@@ -84,7 +86,7 @@ const AdminAllReviewTable: React.FC<AdminAllReviewTableProps> = ({
               <GoEye style={{ fontSize: "24px" }} />
             </button>
           </Tooltip>
-          <Tooltip placement="left" title="Block this User">
+          <Tooltip placement="left" title="Delete Review">
             <button
               className="!p-0 !bg-transparent !border-none !text-error-color cursor-pointer"
               onClick={() => showDeleteModal(record)}

@@ -1,8 +1,10 @@
+import { useTranslation } from "react-i18next";
 import { useGetAllUsersQuery } from "../../../redux/features/users/usersApi";
 import { IUserType } from "../../../types";
 import RecentUsersTable from "../../../ui/Tables/RecentUsersTable";
 
 const RecentUser = () => {
+  const { t } = useTranslation();
   const { data, isFetching } = useGetAllUsersQuery({
     page: 1,
     limit: 6,
@@ -15,7 +17,7 @@ const RecentUser = () => {
     <div className="mt-10 ">
       <div className="flex justify-between items-center py-2">
         <p className="text-2xl text-base-color lg:text-3xl font-bold mb-3">
-          Recent All Users
+          {t("dashboard.recent_all_users")}
         </p>
       </div>
 

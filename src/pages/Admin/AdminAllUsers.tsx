@@ -6,15 +6,20 @@ import BlockModal from "../../ui/Modal/BlockModal";
 import UnblockModal from "../../ui/Modal/UnblockModal";
 import {
   useBlockUserMutation,
+  useChangeRoleMutation,
   useGetAllUsersQuery,
   useUnBlockUserMutation,
 } from "../../redux/features/users/usersApi";
 import tryCatchWrapper from "../../utils/tryCatchWrapper";
 import { IUserType } from "../../types";
+import { useTranslation } from "react-i18next";
+import MakeAdminModal from "../../ui/Modal/Users/MakeAdminModal";
 
 const AdminAllUsers = () => {
+  const { t } = useTranslation();
   const [blockUser] = useBlockUserMutation();
   const [unblockUser] = useUnBlockUserMutation();
+  const [changeRole] = useChangeRoleMutation();
   const [page, setPage] = useState(1);
   const [searchText, setSearchText] = useState("");
 
@@ -30,6 +35,7 @@ const AdminAllUsers = () => {
   const totalAllUsers = data?.meta?.total;
 
   const [isViewModalVisible, setIsViewModalVisible] = useState(false);
+  const [isVerifyModalVisible, setIsVerifyModalVisible] = useState(false);
   const [isBlockModalVisible, setIsBlockModalVisible] = useState(false);
   const [isUnblockModalVisible, setIsUnblockModalVisible] = useState(false);
   const [currentRecord, setCurrentRecord] = useState<IUserType | null>(null);
@@ -55,6 +61,14 @@ const AdminAllUsers = () => {
     setCurrentRecord(null);
   };
 
+  const showVerifyModal = () => {
+    setIsVerifyModalVisible(true);
+  };
+
+  const handleVerifyCancel = () => {
+    setIsVerifyModalVisible(false);
+  };
+
   const handleBlock = async (record: IUserType) => {
     const res = await tryCatchWrapper(
       blockUser,
@@ -75,6 +89,43 @@ const AdminAllUsers = () => {
       handleCancel();
     }
   };
+
+  const handleMakeAdmin = async (data: IUserType) => {
+    const res = await tryCatchWrapper(
+      changeRole,
+      {
+        body: {
+          role: "admin",
+        },
+        params: data?._id,
+      },
+      "Processing..."
+    );
+    if (res.statusCode === 200) {
+      setIsVerifyModalVisible(false);
+      setTimeout(() => {
+        handleCancel();
+      }, 100);
+    }
+  };
+  const handleRemoveAdmin = async (data: IUserType) => {
+    const res = await tryCatchWrapper(
+      changeRole,
+      {
+        body: {
+          role: "user",
+        },
+        params: data?._id,
+      },
+      "Processing..."
+    );
+    if (res.statusCode === 200) {
+      setIsVerifyModalVisible(false);
+      setTimeout(() => {
+        handleCancel();
+      }, 100);
+    }
+  };
   return (
     <div>
       <div
@@ -84,11 +135,11 @@ const AdminAllUsers = () => {
         <div className="bg-secondary-color w-full p-5 rounded-tl-xl rounded-tr-xl">
           <div className=" flex items-center justify-between">
             <p className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl text-primary-color font-semibold">
-              Users
+              {t("dashboard.users")}
             </p>
             <div className="h-fit">
               <SearchInput
-                placeholder="Search ..."
+                placeholder={t("extra.search")}
                 setSearch={setSearchText}
                 setPage={setPage}
               />
@@ -112,20 +163,26 @@ const AdminAllUsers = () => {
           isUserViewModalVisible={isViewModalVisible}
           handleCancel={handleCancel}
           currentRecord={currentRecord}
+          showVerifyModal={showVerifyModal}
         />
         <BlockModal
           isBlockModalVisible={isBlockModalVisible}
           handleCancel={handleCancel}
           currentRecord={currentRecord}
           handleBlock={handleBlock}
-          description=" Are You Sure You want to Block This Player?"
         />
         <UnblockModal
           isUnblockModalVisible={isUnblockModalVisible}
           handleCancel={handleCancel}
           currentRecord={currentRecord}
           handleUnblock={handleUnblock}
-          description=" Are You Sure You want to Unblock This Player?"
+        />
+        <MakeAdminModal
+          handleRemoveAdmin={handleRemoveAdmin}
+          handleMakeAdmin={handleMakeAdmin}
+          isVerifyModalVisible={isVerifyModalVisible}
+          handleVerifyCancel={handleVerifyCancel}
+          currentRecord={currentRecord}
         />
       </div>
     </div>

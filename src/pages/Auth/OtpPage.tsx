@@ -9,8 +9,11 @@ import { AuthImages } from "../../../public/images/AllImages";
 import { useForgetOtpVerifyMutation } from "../../redux/features/auth/authApi";
 import tryCatchWrapper from "../../utils/tryCatchWrapper";
 import Cookies from "js-cookie";
+import { useTranslation } from "react-i18next";
+import LanguageChange from "./LanguageChange";
 
 const OTPVerify = () => {
+  const { t } = useTranslation();
   const [form] = Form.useForm();
   const [otpMatch] = useForgetOtpVerifyMutation();
   const router = useNavigate();
@@ -37,7 +40,9 @@ const OTPVerify = () => {
   return (
     <div className="text-base-color">
       <Container>
-        <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 items-center justify-items-center gap-5">
+        <LanguageChange />
+
+        <div className="min-h-[90vh] grid grid-cols-1 lg:grid-cols-2 items-center justify-items-center gap-5">
           <img
             src={AuthImages.otp}
             alt="logo"
@@ -46,11 +51,10 @@ const OTPVerify = () => {
           <div className="w-full sm:w-[70%] lg:w-full mx-auto">
             <div className=" mt-5 mb-8">
               <h1 className="text-3xl lg:text-4xl font-semibold text-base-color mb-5">
-                Verify OTP
+                {t("verifyOTP.title")}
               </h1>
               <p className="text-xl lg:text-2xl font-medium mb-2 text-base-color/90">
-                Please check your email. We have sent a code to contact
-                @gmail.com
+                {t("verifyOTP.info")}
               </p>
             </div>
 
@@ -79,15 +83,9 @@ const OTPVerify = () => {
                 className="!py-6 !px-9 !text-base sm:!text-lg lg:!text-xl !rounded-xl"
                 // icon={allIcons.arrowRight}
               >
-                Verify OTP
+                {t("verifyOTP.button")}
               </ReuseButton>
             </Form>
-            <div className="flex justify-center gap-2 py-1 mt-5">
-              <p>Didn’t receive code?</p>
-              <p className="!text-secondary-color !underline font-semibold cursor-pointer">
-                Click to resend
-              </p>
-            </div>
           </div>
         </div>
       </Container>

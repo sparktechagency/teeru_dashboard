@@ -5,29 +5,34 @@ import { NavLink } from "react-router-dom";
 interface SidebarItem {
   key: string;
   path?: string;
-  name?: string;
-  icon?: string;
+  name?: string; // Make name optional
+  icon?: string; // Make icon optional
   children?: {
     key: string;
     path?: string;
     name?: string;
     icon: React.ReactElement | null;
-  }[]; // Recursive type for nested children
+  }[];
 }
 
 // Define the structure of the sidebar item object that will be returned
 interface SidebarMenuItem {
   key: string;
-  icon: JSX.Element | null;
-  label: JSX.Element;
+  icon?: JSX.Element | null;
+  label?: JSX.Element;
   children?: SidebarMenuItem[]; // Nested items can also follow this structure
 }
 
+// SidebarItemsGenerator function (no hooks inside it)
 export const sidebarItemsGenerator = (
   items: SidebarItem[],
-  role: string
+  role: string,
+  t: (key: string) => string // Pass `t` function as argument
 ): SidebarMenuItem[] => {
   const sidebarItems = items.reduce<SidebarMenuItem[]>((acc, item) => {
+    // Translate item name
+    const translatedName = t(`sidebar.${item.key}`);
+
     // Add main item if it has path and name
     if (item.path && item.name) {
       acc.push({
@@ -45,7 +50,7 @@ export const sidebarItemsGenerator = (
             }}
           />
         ) : null,
-        label: <NavLink to={`/${role}/${item.path}`}>{item.name}</NavLink>,
+        label: <NavLink to={`/${role}/${item.path}`}>{translatedName}</NavLink>,
       });
     }
 
@@ -66,14 +71,16 @@ export const sidebarItemsGenerator = (
             }}
           />
         ) : null,
-        label: <span className="">{item.name}</span>,
+        label: <span>{translatedName}</span>,
         children: item.children
           .filter((child) => child.name) // Ensure child has a name
           .map((child) => ({
             key: child.key,
             icon: child?.icon ? child.icon : null,
             label: (
-              <NavLink to={`/${role}/${child.path}`}>{child.name}</NavLink>
+              <NavLink to={`/${role}/${child.path}`}>
+                {t(`sidebar.${child.key}`)} {/* Translate the child name */}
+              </NavLink>
             ),
           })),
       });
