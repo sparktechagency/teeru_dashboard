@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect } from "react";
-import { Modal, Form } from "antd";
+import { Modal, Form, Typography } from "antd";
 import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
 
@@ -16,6 +16,7 @@ import { FadeLoader } from "react-spinners";
 import tryCatchWrapper from "../../../utils/tryCatchWrapper";
 import { useUpdateEventMutation } from "../../../redux/features/event/eventApi";
 import ReuseUpload from "../../Form/ReuseUpload";
+import { getImageUrl } from "../../../helpers/config/envConfig";
 
 interface AdminEditEventModalProps {
   isEditModalVisible: boolean;
@@ -28,36 +29,24 @@ const AdminEditEventModal: React.FC<AdminEditEventModalProps> = ({
   handleCancel,
   currentRecord,
 }) => {
-  const { t } = useTranslation(); // Hook to access translations
+  const imageApiUrl = getImageUrl();
+  const { t } = useTranslation();
   const [editEvent] = useUpdateEventMutation();
   const [form] = Form.useForm();
-  const [date, setDate] = React.useState<string | null>(null); // Ensuring date is always string | null
-
-  const handleDateChange = (_date: any, dateString: string | string[]) => {
-    // If an array of dates is passed, take the first date
-    if (Array.isArray(dateString)) {
-      setDate(dateString[0] || null); // Set only the first date or null
-    } else {
-      setDate(dateString); // If single date is selected, set it directly
-    }
-  };
+  const [date, setDate] = React.useState<string | null>(null);
 
   const { data, isFetching } = useGetCategoryQuery(
-    {
-      page: 1,
-      limit: 999999,
-    },
-    {
-      refetchOnMountOrArgChange: true,
-      skip: !isEditModalVisible,
-    }
+    { page: 1, limit: 999999 },
+    { refetchOnMountOrArgChange: true, skip: !isEditModalVisible }
   );
 
-  const allCategory: ICategoryType[] = data?.data?.result;
+  const allCategory: ICategoryType[] = data?.data?.result || [];
 
-  // Set initial form values when currentRecord changes
+  // Update form fields when currentRecord changes
   useEffect(() => {
     if (currentRecord) {
+      setDate(currentRecord.date || null);
+
       form.setFieldsValue({
         name: currentRecord.name,
         category: currentRecord.category?._id || null,
@@ -65,24 +54,73 @@ const AdminEditEventModal: React.FC<AdminEditEventModalProps> = ({
         time: currentRecord.time ? dayjs(currentRecord.time, "HH:mm") : null,
         location: currentRecord.location,
         head_to_head: currentRecord.head_to_head,
-        tribune: currentRecord.ticketPrices?.tribune ?? "",
-        annexeLoge: currentRecord.ticketPrices?.annexeLoge ?? "",
-        logeVIP: currentRecord.ticketPrices?.logeVIP ?? "",
-        logeVVIP: currentRecord.ticketPrices?.logeVVIP ?? "",
-        serviceFee: currentRecord.ticketPrices?.serviceFee ?? "",
-        processingFee: currentRecord.ticketPrices?.processingFee ?? "",
+        tribune: currentRecord.ticketPrices?.tribune?.price ?? "",
+        "ticketPrices.tribune.serviceFee":
+          currentRecord.ticketPrices?.tribune?.serviceFee ?? "",
+        "ticketPrices.tribune.processingFee":
+          currentRecord.ticketPrices?.tribune?.processingFee ?? "",
+
+        annexeLoge: currentRecord.ticketPrices?.annexeLoge?.price ?? "",
+        "ticketPrices.annexeLoge.serviceFee":
+          currentRecord.ticketPrices?.annexeLoge?.serviceFee ?? "",
+        "ticketPrices.annexeLoge.processingFee":
+          currentRecord.ticketPrices?.annexeLoge?.processingFee ?? "",
+
+        logeVIP: currentRecord.ticketPrices?.logeVIP?.price ?? "",
+        "ticketPrices.logeVIP.serviceFee":
+          currentRecord.ticketPrices?.logeVIP?.serviceFee ?? "",
+        "ticketPrices.logeVIP.processingFee":
+          currentRecord.ticketPrices?.logeVIP?.processingFee ?? "",
+
+        logeVVIP: currentRecord.ticketPrices?.logeVVIP?.price ?? "",
+        "ticketPrices.logeVVIP.serviceFee":
+          currentRecord.ticketPrices?.logeVVIP?.serviceFee ?? "",
+        "ticketPrices.logeVVIP.processingFee":
+          currentRecord.ticketPrices?.logeVVIP?.processingFee ?? "",
       });
     } else {
       form.resetFields();
+      setDate(null);
     }
   }, [currentRecord, form]);
 
-  // Handle form submit and transform values
+  const handleDateChange = (_date: any, dateString: string | string[]) => {
+    if (Array.isArray(dateString)) {
+      setDate(dateString[0] || null);
+    } else {
+      setDate(dateString);
+    }
+  };
+
   const handleFinish = async (values: any) => {
     const formData = new FormData();
 
     const dateISO = values.date ? values.date.toISOString() : null;
     const timeStr = values.time ? values.time.format("HH:mm") : null;
+
+    // Structure ticketPrices nested as per your Add modal
+    const ticketPrices = {
+      tribune: {
+        price: Number(values.tribune),
+        serviceFee: Number(values["ticketPrices.tribune.serviceFee"]),
+        processingFee: Number(values["ticketPrices.tribune.processingFee"]),
+      },
+      annexeLoge: {
+        price: Number(values.annexeLoge),
+        serviceFee: Number(values["ticketPrices.annexeLoge.serviceFee"]),
+        processingFee: Number(values["ticketPrices.annexeLoge.processingFee"]),
+      },
+      logeVIP: {
+        price: Number(values.logeVIP),
+        serviceFee: Number(values["ticketPrices.logeVIP.serviceFee"]),
+        processingFee: Number(values["ticketPrices.logeVIP.processingFee"]),
+      },
+      logeVVIP: {
+        price: Number(values.logeVVIP),
+        serviceFee: Number(values["ticketPrices.logeVVIP.serviceFee"]),
+        processingFee: Number(values["ticketPrices.logeVVIP.processingFee"]),
+      },
+    };
 
     const payload = {
       name: values.name,
@@ -91,26 +129,24 @@ const AdminEditEventModal: React.FC<AdminEditEventModalProps> = ({
       time: timeStr,
       location: values.location,
       head_to_head: values.head_to_head,
-      ticketPrices: {
-        tribune: Number(values.tribune),
-        annexeLoge: Number(values.annexeLoge),
-        logeVIP: Number(values.logeVIP),
-        logeVVIP: Number(values.logeVVIP),
-        serviceFee: Number(values.serviceFee),
-        processingFee: Number(values.processingFee),
-      },
+      ticketPrices,
     };
-    if (values?.image[0]?.originFileObj) {
-      formData.append("image", values?.image[0]?.originFileObj);
+
+    if (values?.image?.[0]?.originFileObj) {
+      formData.append("image", values.image[0].originFileObj);
     }
+
     formData.append("data", JSON.stringify(payload));
+
     const res = await tryCatchWrapper(
       editEvent,
       { body: formData, params: currentRecord?._id },
-      "Deleting Event..."
+      "Updating Event..."
     );
+
     if (res.statusCode === 200) {
       form.resetFields();
+      setDate(null);
       handleCancel();
     }
   };
@@ -145,14 +181,15 @@ const AdminEditEventModal: React.FC<AdminEditEventModalProps> = ({
               <ReuseSelect
                 label={t("event_form.category")}
                 name="category"
-                options={allCategory?.map((category) => ({
-                  value: category?._id,
-                  label: category?.name,
+                options={allCategory.map((category) => ({
+                  value: category._id,
+                  label: category.name,
                 }))}
                 rules={[{ required: true, message: t("event_form.category") }]}
                 placeholder={t("event_form.category_placeholder")}
               />
             </div>
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
               <ReuseDatePicker
                 name="date"
@@ -171,6 +208,7 @@ const AdminEditEventModal: React.FC<AdminEditEventModalProps> = ({
                 ]}
               />
             </div>
+
             <ReuseInput
               label={t("event_form.location")}
               inputType="normal"
@@ -178,11 +216,19 @@ const AdminEditEventModal: React.FC<AdminEditEventModalProps> = ({
               type="text"
               placeholder={t("event_form.location_placeholder")}
               rules={[{ required: true, message: t("event_form.location") }]}
-            />{" "}
+            />
+
             <div>
               <ReuseUpload name="image" label={t("event_form.event_image")} />
-              <p>{currentRecord?.image}</p>
+              {currentRecord?.image && (
+                <img
+                  src={imageApiUrl + currentRecord.image}
+                  alt="Event"
+                  className="mt-2 max-h-20 object-contain"
+                />
+              )}
             </div>
+
             <div className="mt-5">
               <ReuseInput
                 label={t("event_form.head_to_head")}
@@ -190,69 +236,62 @@ const AdminEditEventModal: React.FC<AdminEditEventModalProps> = ({
                 name="head_to_head"
                 type="text"
                 placeholder={t("event_form.head_to_head_placeholder")}
-                rules={[{ required: true, message: t("event_form.location") }]}
-              />
-            </div>{" "}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-5">
-              <ReuseInput
-                label={t("event_form.tribune")}
-                inputType="normal"
-                name="tribune"
-                type="number"
-                placeholder={t("event_form.tribune_placeholder")}
-                rules={[{ required: true, message: t("event_form.tribune") }]}
-              />
-              <ReuseInput
-                label={t("event_form.annexe_loge")}
-                inputType="normal"
-                name="annexeLoge"
-                type="number"
-                placeholder={t("event_form.annexe_loge_placeholder")}
                 rules={[
-                  { required: true, message: t("event_form.annexe_loge") },
+                  { required: true, message: t("event_form.head_to_head") },
                 ]}
               />
             </div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-              <ReuseInput
-                label={t("event_form.loge_vip")}
-                inputType="normal"
-                name="logeVIP"
-                type="number"
-                placeholder={t("event_form.loge_vip_placeholder")}
-                rules={[{ required: true, message: t("event_form.loge_vip") }]}
-              />
-              <ReuseInput
-                label={t("event_form.loge_vvip")}
-                inputType="normal"
-                name="logeVVIP"
-                type="number"
-                placeholder={t("event_form.loge_vvip_placeholder")}
-                rules={[{ required: true, message: t("event_form.loge_vvip") }]}
-              />
-            </div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-              <ReuseInput
-                label={t("event_form.service_fee")}
-                inputType="normal"
-                name="serviceFee"
-                type="number"
-                placeholder={t("event_form.service_fee_placeholder")}
-                rules={[
-                  { required: true, message: t("event_form.service_fee") },
-                ]}
-              />
-              <ReuseInput
-                label={t("event_form.processing_fee")}
-                inputType="normal"
-                name="processingFee"
-                type="number"
-                placeholder={t("event_form.processing_fee_placeholder")}
-                rules={[
-                  { required: true, message: t("event_form.processing_fee") },
-                ]}
-              />
-            </div>
+
+            {/* Ticket prices section with nested serviceFee and processingFee */}
+            {["tribune", "annexeLoge", "logeVIP", "logeVVIP"].map((section) => (
+              <div key={section} className="mt-5">
+                <Typography.Title
+                  level={3}
+                  className="!text-base-color !font-normal"
+                >
+                  {t(`event_form.${section}_heading`) || section}
+                </Typography.Title>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                  <ReuseInput
+                    label={t("event_form.tribune")}
+                    inputType="normal"
+                    name={section}
+                    type="number"
+                    placeholder={t(`event_form.${section}_placeholder`)}
+                    rules={[
+                      {
+                        required: true,
+                        message: t(`event_form.${section}_price`),
+                      },
+                    ]}
+                  />
+                  <ReuseInput
+                    label={t("event_form.service_fee")}
+                    inputType="normal"
+                    name={`ticketPrices.${section}.serviceFee`}
+                    type="number"
+                    placeholder={t("event_form.service_fee_placeholder")}
+                    rules={[
+                      { required: true, message: t("event_form.service_fee") },
+                    ]}
+                  />
+                  <ReuseInput
+                    label={t("event_form.processing_fee")}
+                    inputType="normal"
+                    name={`ticketPrices.${section}.processingFee`}
+                    type="number"
+                    placeholder={t("event_form.processing_fee_placeholder")}
+                    rules={[
+                      {
+                        required: true,
+                        message: t("event_form.processing_fee"),
+                      },
+                    ]}
+                  />
+                </div>
+              </div>
+            ))}
+
             <ReuseButton variant="secondary" htmlType="submit" className="mt-8">
               {t("event_form.update")}
             </ReuseButton>

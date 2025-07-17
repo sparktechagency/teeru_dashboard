@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Space, Tooltip } from "antd";
 import ReuseTable from "../../utils/ReuseTable";
 import { MdDelete, MdEdit } from "react-icons/md";
@@ -8,10 +7,12 @@ import { formatDate } from "../../utils/dateFormet";
 import { getImageUrl } from "../../helpers/config/envConfig";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
+import { IoIosEye } from "react-icons/io";
 
 interface AdminAllEventTableProps {
   data: IEventType[];
   loading: boolean;
+  showViewModal: (record: IEventType) => void;
   showEditModal: (record: IEventType) => void;
   showDeleteModal: (record: IEventType) => void;
   setPage: (page: number) => void;
@@ -24,6 +25,7 @@ interface AdminAllEventTableProps {
 const AdminAllEventTable: React.FC<AdminAllEventTableProps> = ({
   data,
   loading,
+  showViewModal,
   showEditModal,
   showDeleteModal,
   setPage,
@@ -106,37 +108,18 @@ const AdminAllEventTable: React.FC<AdminAllEventTableProps> = ({
       key: "head_to_head",
     },
     {
-      title: t("event_table.ticket_prices"),
-      dataIndex: "ticketPrices",
-      key: "ticketPrices",
-      render: (ticketPrices: any) => {
-        return (
-          <div className="grid grid-cols-2 gap-x-2 gap-y-2">
-            <span>Tribune: {ticketPrices.tribune}</span>
-            <span>Annexe Loge: {ticketPrices.annexeLoge}</span>
-            <span>Loge VIP: {ticketPrices.logeVIP}</span>
-            <span>Loge VVIP: {ticketPrices.logeVVIP}</span>
-          </div>
-        );
-      },
-    },
-    {
-      title: t("event_table.service_fee"),
-      dataIndex: ["ticketPrices", "serviceFee"],
-      key: "serviceFee",
-      align: "center",
-    },
-    {
-      title: t("event_table.processing_fee"),
-      dataIndex: ["ticketPrices", "processingFee"],
-      key: "processingFee",
-      align: "center",
-    },
-    {
       title: t("event_table.action"),
       key: "action",
       render: (_: unknown, record: IEventType) => (
         <Space size="middle">
+          <Tooltip placement="left" title="View">
+            <button
+              className="!p-0 !bg-transparent !border-none !text-base-color cursor-pointer"
+              onClick={() => showViewModal(record)}
+            >
+              <IoIosEye style={{ fontSize: "24px" }} />
+            </button>
+          </Tooltip>
           <Tooltip placement="left" title="Edit">
             <button
               className="!p-0 !bg-transparent !border-none !text-base-color cursor-pointer"

@@ -1,12 +1,16 @@
 import { ICategoryType } from "./CategoryType";
 
-interface ITicketPrices {
-  tribune: number;
-  annexeLoge: number;
-  logeVIP: number;
-  logeVVIP: number;
+interface ITicketPriceDetail {
+  price: number;
   serviceFee: number;
   processingFee: number;
+}
+
+interface ITicketPrices {
+  tribune: ITicketPriceDetail;
+  annexeLoge: ITicketPriceDetail;
+  logeVIP: ITicketPriceDetail;
+  logeVVIP: ITicketPriceDetail;
 }
 
 interface IEventType {
@@ -24,4 +28,4 @@ interface IEventType {
   head_to_head: string;
 }
 
-export type { IEventType };
+export type { IEventType, ITicketPrices, ITicketPriceDetail };

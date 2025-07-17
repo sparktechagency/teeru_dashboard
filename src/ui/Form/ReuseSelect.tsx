@@ -62,7 +62,7 @@ const ReuseSelect = ({
           allowClear={allowClear}
           onChange={onChange}
         >
-          {options.map((option) => (
+          {options?.map((option) => (
             <Option key={option.value} value={option.value}>
               {option.label}
             </Option>

@@ -12,6 +12,7 @@ import {
   useGetEventQuery,
 } from "../../redux/features/event/eventApi";
 import { useTranslation } from "react-i18next";
+import AdminViewEventModal from "../../ui/Modal/Event/AdminViewEventModal";
 
 const AdminAllEvent = () => {
   const { t } = useTranslation();
@@ -28,11 +29,17 @@ const AdminAllEvent = () => {
   const allEvent: IEventType[] = data?.data?.result;
   const totalAllEvent = data?.data?.meta?.total;
 
+  const [isViewModalVisible, setIsViewModalVisible] = useState(false);
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 
   const [currentRecord, setCurrentRecord] = useState<IEventType | null>(null);
+
+  const showViewModal = (record: IEventType) => {
+    setCurrentRecord(record);
+    setIsViewModalVisible(true);
+  };
 
   const showAddEventModal = () => {
     setIsAddModalVisible(true);
@@ -49,6 +56,7 @@ const AdminAllEvent = () => {
   };
 
   const handleCancel = () => {
+    setIsViewModalVisible(false);
     setIsAddModalVisible(false);
     setIsEditModalVisible(false);
     setIsDeleteModalVisible(false);
@@ -91,6 +99,7 @@ const AdminAllEvent = () => {
           <AdminAllEventTable
             data={allEvent}
             loading={isFetching}
+            showViewModal={showViewModal}
             showEditModal={showEditEventModal}
             showDeleteModal={showDeleteModal}
             setPage={setPage}
@@ -102,11 +111,17 @@ const AdminAllEvent = () => {
             isAddModalVisible={isAddModalVisible}
             handleCancel={handleCancel}
           />
+          <AdminViewEventModal
+            isViewModalVisible={isViewModalVisible}
+            handleCancel={handleCancel}
+            currentRecord={currentRecord}
+          />
           <AdminEditEventModal
             isEditModalVisible={isEditModalVisible}
             handleCancel={handleCancel}
             currentRecord={currentRecord}
           />
+
           <DeleteModal
             isDeleteModalVisible={isDeleteModalVisible}
             handleCancel={handleCancel}

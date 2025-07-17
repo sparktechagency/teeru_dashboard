@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Form, Modal } from "antd";
+import { Form, Modal, Typography } from "antd";
 import ReusableForm from "../../Form/ReuseForm";
 import ReuseInput from "../../Form/ReuseInput";
 import ReuseButton from "../../Button/ReuseButton";
@@ -57,13 +57,29 @@ const AdminAddEventModal: React.FC<AdminAddEventModalProps> = ({
       : new Date().toISOString();
     const timeStr = values.time?.format?.("HH:mm") || "";
 
+    console.log("values.ticketPrices", values.ticketPrices);
+
     const ticketPrices = {
-      tribune: Number(values.tribune),
-      annexeLoge: Number(values.annexeLoge),
-      logeVIP: Number(values.logeVIP),
-      logeVVIP: Number(values.logeVVIP),
-      serviceFee: Number(values.serviceFee),
-      processingFee: Number(values.processingFee),
+      tribune: {
+        price: Number(values["ticketPrices.tribune.price"]),
+        serviceFee: Number(values["ticketPrices.tribune.serviceFee"]),
+        processingFee: Number(values["ticketPrices.tribune.processingFee"]),
+      },
+      annexeLoge: {
+        price: Number(values["ticketPrices.annexeLoge.price"]),
+        serviceFee: Number(values["ticketPrices.annexeLoge.serviceFee"]),
+        processingFee: Number(values["ticketPrices.annexeLoge.processingFee"]),
+      },
+      logeVIP: {
+        price: Number(values["ticketPrices.logeVIP.price"]),
+        serviceFee: Number(values["ticketPrices.logeVIP.serviceFee"]),
+        processingFee: Number(values["ticketPrices.logeVIP.processingFee"]),
+      },
+      logeVVIP: {
+        price: Number(values["ticketPrices.logeVVIP.price"]),
+        serviceFee: Number(values["ticketPrices.logeVVIP.serviceFee"]),
+        processingFee: Number(values["ticketPrices.logeVVIP.processingFee"]),
+      },
     };
 
     const payload = {
@@ -99,7 +115,7 @@ const AdminAddEventModal: React.FC<AdminAddEventModalProps> = ({
       open={isAddModalVisible}
       onCancel={handleCancel}
       centered
-      className="lg:!w-[800px]"
+      className="lg:!w-[900px]"
     >
       <div className="p-5">
         {isFetching ? (
@@ -166,49 +182,26 @@ const AdminAddEventModal: React.FC<AdminAddEventModalProps> = ({
                 rules={[{ required: true, message: t("event_form.location") }]}
               />
             </div>{" "}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            {/* Tribune  */}
+            <Typography.Title
+              level={3}
+              className="!text-base-color !font-normal"
+            >
+              {t("event_form.tribune_heading")}:
+            </Typography.Title>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
               <ReuseInput
                 label={t("event_form.tribune")}
                 inputType="normal"
-                name="tribune"
+                name="ticketPrices.tribune.price"
                 type="number"
                 placeholder={t("event_form.tribune_placeholder")}
                 rules={[{ required: true, message: t("event_form.tribune") }]}
               />
               <ReuseInput
-                label={t("event_form.annexe_loge")}
-                inputType="normal"
-                name="annexeLoge"
-                type="number"
-                placeholder={t("event_form.annexe_loge_placeholder")}
-                rules={[
-                  { required: true, message: t("event_form.annexe_loge") },
-                ]}
-              />
-            </div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-              <ReuseInput
-                label={t("event_form.loge_vip")}
-                inputType="normal"
-                name="logeVIP"
-                type="number"
-                placeholder={t("event_form.loge_vip_placeholder")}
-                rules={[{ required: true, message: t("event_form.loge_vip") }]}
-              />
-              <ReuseInput
-                label={t("event_form.loge_vvip")}
-                inputType="normal"
-                name="logeVVIP"
-                type="number"
-                placeholder={t("event_form.loge_vvip_placeholder")}
-                rules={[{ required: true, message: t("event_form.loge_vvip") }]}
-              />
-            </div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-              <ReuseInput
                 label={t("event_form.service_fee")}
                 inputType="normal"
-                name="serviceFee"
+                name="ticketPrices.tribune.serviceFee"
                 type="number"
                 placeholder={t("event_form.service_fee_placeholder")}
                 rules={[
@@ -218,7 +211,118 @@ const AdminAddEventModal: React.FC<AdminAddEventModalProps> = ({
               <ReuseInput
                 label={t("event_form.processing_fee")}
                 inputType="normal"
-                name="processingFee"
+                name="ticketPrices.tribune.processingFee"
+                type="number"
+                placeholder={t("event_form.processing_fee_placeholder")}
+                rules={[
+                  { required: true, message: t("event_form.processing_fee") },
+                ]}
+              />
+            </div>
+            {/* Annexe Loge  */}
+            <Typography.Title
+              level={3}
+              className="!text-base-color !font-normal"
+            >
+              {t("event_form.annexeLoge_heading")}:
+            </Typography.Title>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+              <ReuseInput
+                label={t("event_form.tribune")}
+                inputType="normal"
+                name="ticketPrices.annexeLoge.price"
+                type="number"
+                placeholder={t("event_form.tribune_placeholder")}
+                rules={[{ required: true, message: t("event_form.tribune") }]}
+              />
+              <ReuseInput
+                label={t("event_form.service_fee")}
+                inputType="normal"
+                name="ticketPrices.annexeLoge.serviceFee"
+                type="number"
+                placeholder={t("event_form.service_fee_placeholder")}
+                rules={[
+                  { required: true, message: t("event_form.service_fee") },
+                ]}
+              />
+              <ReuseInput
+                label={t("event_form.processing_fee")}
+                inputType="normal"
+                name="ticketPrices.annexeLoge.processingFee"
+                type="number"
+                placeholder={t("event_form.processing_fee_placeholder")}
+                rules={[
+                  { required: true, message: t("event_form.processing_fee") },
+                ]}
+              />
+            </div>
+            {/* Loge VIP  */}
+            <Typography.Title
+              level={3}
+              className="!text-base-color !font-normal"
+            >
+              {t("event_form.logeVIP_heading")}:
+            </Typography.Title>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+              <ReuseInput
+                label={t("event_form.tribune")}
+                inputType="normal"
+                name="ticketPrices.logeVIP.price"
+                type="number"
+                placeholder={t("event_form.tribune_placeholder")}
+                rules={[{ required: true, message: t("event_form.tribune") }]}
+              />
+              <ReuseInput
+                label={t("event_form.service_fee")}
+                inputType="normal"
+                name="ticketPrices.logeVIP.serviceFee"
+                type="number"
+                placeholder={t("event_form.service_fee_placeholder")}
+                rules={[
+                  { required: true, message: t("event_form.service_fee") },
+                ]}
+              />
+              <ReuseInput
+                label={t("event_form.processing_fee")}
+                inputType="normal"
+                name="ticketPrices.logeVIP.processingFee"
+                type="number"
+                placeholder={t("event_form.processing_fee_placeholder")}
+                rules={[
+                  { required: true, message: t("event_form.processing_fee") },
+                ]}
+              />
+            </div>
+            {/* Loge VVIP  */}
+            <Typography.Title
+              level={3}
+              className="!text-base-color !font-normal"
+            >
+              {t("event_form.logeVVIP_heading")}:
+            </Typography.Title>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+              <ReuseInput
+                label={t("event_form.tribune")}
+                inputType="normal"
+                name="ticketPrices.logeVVIP.price"
+                type="number"
+                placeholder={t("event_form.tribune_placeholder")}
+                rules={[{ required: true, message: t("event_form.tribune") }]}
+              />
+              <ReuseInput
+                label={t("event_form.service_fee")}
+                inputType="normal"
+                name="ticketPrices.logeVVIP.serviceFee"
+                type="number"
+                placeholder={t("event_form.service_fee_placeholder")}
+                rules={[
+                  { required: true, message: t("event_form.service_fee") },
+                ]}
+              />
+              <ReuseInput
+                label={t("event_form.processing_fee")}
+                inputType="normal"
+                name="ticketPrices.logeVVIP.processingFee"
                 type="number"
                 placeholder={t("event_form.processing_fee_placeholder")}
                 rules={[
